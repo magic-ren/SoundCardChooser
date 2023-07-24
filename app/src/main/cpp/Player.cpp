@@ -8,7 +8,17 @@
 
  Player::Player() {}
 
+void *task_start(void *args) {
+    Player *player = static_cast<Player *>(args);
+    player->start_();
+    return 0;
+}
+
 void Player::start() {
+    pthread_create(&pid_play, 0, task_start, this);
+}
+
+void Player::start_() {
     struct pcm_config config;
     struct pcm *pcm_in;
     struct pcm *pcm_out;
@@ -47,7 +57,7 @@ void Player::start() {
     }
     LOGE("采样点个数：%u",pcm_get_buffer_size(pcm_in));
     size = pcm_frames_to_bytes(pcm_in, pcm_get_buffer_size(pcm_in));    //pcm_get_buffer_size()是获取一个周期内有多少采样点；
-                                                                        // pcm_frames_to_bytes()是获取一个周期内占用多少字节。
+    // pcm_frames_to_bytes()是获取一个周期内占用多少字节。
     LOGE("采样点大小计算：%u",pcm_get_buffer_size(pcm_in)*4);
     LOGE("采样点大小size：%u",size);
 //    LOGE("录音buffer的大小是：%u",size);
@@ -64,16 +74,16 @@ void Player::start() {
         LOGE("buffer初始化啦");
     }
     LOGE("Capturing sample: %u ch, %u hz, %u bit\n", 2, 44100,
-           pcm_format_to_bits(PCM_FORMAT_S16_LE));
+         pcm_format_to_bits(PCM_FORMAT_S16_LE));
 
     while (!pcm_read(pcm_in, buffer, size)) {
         LOGE("录制成功");
-//        std::string output;
-//        for (int i = 0; i < size; ++i) {
-////            output += std::to_string(static_cast<unsigned char>(*(buffer+i))) + " ";
+        std::string output;
+        for (int i = 0; i < size; ++i) {
+            output += std::to_string(static_cast<unsigned char>(*(buffer+i))) + " ";
 //            LOGE("%d",static_cast<int>(static_cast<unsigned char>(buffer[i])));
-//        }
-//        LOGE("%s", output.c_str());
+        }
+        LOGE("%s", output.c_str());
         int i = pcm_write(pcm_out, buffer, size);
         LOGE("播放结果：%d\n",i);
     }

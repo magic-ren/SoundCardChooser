@@ -9,18 +9,23 @@
 #include <string.h>
 #include <cstdlib>
 #include <string>
+#include <pthread.h>
 
 extern "C" {
 #include "asoundlib.h"
 };
 
 class Player {
+private:
+    pthread_t pid_play;
 public:
     Player();
 
     ~Player();
 
     void start();
+
+    void start_();
 
 
 };
