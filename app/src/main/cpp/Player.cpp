@@ -36,7 +36,7 @@ void Player::start_() {
     config.stop_threshold = 0;
     config.silence_threshold = 0;
 
-    pcm_in = pcm_open(2, 0, PCM_IN, &config);
+    pcm_in = pcm_open(0, 0, PCM_IN, &config);
     if (!pcm_in || !pcm_is_ready(pcm_in)) {
 //        fprintf(stderr, "Unable to open PCM device (%s)\n",
 //                pcm_get_error(pcm_in));
@@ -78,14 +78,53 @@ void Player::start_() {
 
     while (!pcm_read(pcm_in, buffer, size)) {
         LOGE("录制成功");
+//        std::string output;
+//        for (int i = 0; i < size; ++i) {
+//            output += std::to_string(static_cast<unsigned char>(*(buffer+i))) + " ";
+////            LOGE("%d",static_cast<int>(static_cast<unsigned char>(buffer[i])));
+//        }
+//        LOGE("%s", output.c_str());
+
+        //3,4复制1，2。
+        //声卡是7202时：
+        //7202是左声道录制的环境音，所以这里等于是将环境音复制到了右声道，可以播放成功。
+        //声卡是817时：
+        //817是左声道录制的听诊音，所以这里等于是将听诊音复制到了右声道，可以播放成功。
+        int i=0;
+        int j =2;
+        int n = size/4;
+        for(int k = 1;k<=n;++k){
+            buffer[j]=buffer[i];
+            buffer[j+1]=buffer[i+1];
+            i+=4;
+            j+=4;
+        }
+
+        //1,2复制3,4
+        //声卡是7202时：
+        //7202是左声道录制的环境音，所以这里等于是将听诊音复制到了左声道，而此时听诊器是插到817上的，听诊音是没有声音的，所以播放失败。
+        //声卡是817时：
+        //817是左声道录制的听诊音，所以这里等于是将环境音复制到了左声道，而此时环境麦是插到7202上的，环境音是没有声音的，所以播放失败。
+//        int i=0;
+//        int j =2;
+//        int n = size/4;
+//        for(int k = 1;k<=n;++k){
+//            buffer[i]=buffer[j];
+//            buffer[i+1]=buffer[j+1];
+//            i+=4;
+//            j+=4;
+//        }
+
+        int result = pcm_write(pcm_out, buffer, size);
+
         std::string output;
         for (int i = 0; i < size; ++i) {
             output += std::to_string(static_cast<unsigned char>(*(buffer+i))) + " ";
 //            LOGE("%d",static_cast<int>(static_cast<unsigned char>(buffer[i])));
         }
         LOGE("%s", output.c_str());
-        int i = pcm_write(pcm_out, buffer, size);
-        LOGE("播放结果：%d\n",i);
+
+        LOGE("播放结果：%d\n",result);
     }
 
 }
