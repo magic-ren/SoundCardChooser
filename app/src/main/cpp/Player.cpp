@@ -24,6 +24,11 @@ void Player::start_() {
     struct pcm *pcm_out;
     char *buffer;
     unsigned int size;
+    //**********************************合成代码*************************************//
+//    char *buffer2;
+//    char *buffer3;
+//    struct pcm *pcm_in_2;
+    //**********************************合成代码*************************************//
 
 
     memset(&config, 0, sizeof(config));
@@ -46,6 +51,19 @@ void Player::start_() {
         LOGE("pcmC0D0c打开啦");
     }
 
+    //**********************************合成代码*************************************//
+//    pcm_in_2 = pcm_open(2, 0, PCM_IN, &config);
+//    if (!pcm_in_2 || !pcm_is_ready(pcm_in_2)) {
+////        fprintf(stderr, "Unable to open PCM device (%s)\n",
+////                pcm_get_error(pcm_in));
+//        LOGE("Unable to open PCM device (%s)\n",pcm_get_error(pcm_in_2));
+//        return;
+//    } else{
+//        LOGE("pcmC0D2c打开啦");
+//    }
+    //**********************************合成代码*************************************//
+
+
     pcm_out = pcm_open(0, 0, PCM_OUT, &config);
     if (!pcm_out || !pcm_is_ready(pcm_out)) {
 //        fprintf(stderr, "Unable to open PCM device (%s)\n",
@@ -64,6 +82,10 @@ void Player::start_() {
 //    int j = pcm_frames_to_bytes(pcm_out, pcm_get_buffer_size(pcm_out));
 //    LOGE("播放buffer的大小是：%u",j);
     buffer = static_cast<char *>(malloc(size));
+    //**********************************合成代码*************************************//
+//    buffer2 = static_cast<char *>(malloc(size));
+//    buffer3 = static_cast<char *>(malloc(size));
+    //**********************************合成代码*************************************//
     if (!buffer) {
         LOGE("Unable to allocate %u bytes\n",size);
         free(buffer);
@@ -77,6 +99,9 @@ void Player::start_() {
          pcm_format_to_bits(PCM_FORMAT_S16_LE));
 
     while (!pcm_read(pcm_in, buffer, size)) {
+   //**********************************合成代码*************************************//
+//    while (!pcm_read(pcm_in, buffer, size)&&!pcm_read(pcm_in_2, buffer2, size)) {
+   //**********************************合成代码*************************************//
         LOGE("录制成功");
 //        std::string output;
 //        for (int i = 0; i < size; ++i) {
@@ -85,20 +110,77 @@ void Player::start_() {
 //        }
 //        LOGE("%s", output.c_str());
 
+
+//**********************************合成代码*************************************//
+//        std::string output1;
+//        for (int i = 0; i < size; ++i) {
+//            output1 += std::to_string(static_cast<unsigned char>(*(buffer+i))) + " ";
+////            LOGE("%d",static_cast<int>(static_cast<unsigned char>(buffer[i])));
+//        }
+//        LOGE("817合成前：%s", output1.c_str());
+//
+//        std::string output2;
+//        for (int i = 0; i < size; ++i) {
+//            output2 += std::to_string(static_cast<unsigned char>(*(buffer2+i))) + " ";
+////            LOGE("%d",static_cast<int>(static_cast<unsigned char>(buffer[i])));
+//        }
+//        LOGE("7202合成前：%s", output2.c_str());
+//
+//
+//        //将817的左声道和7202的左声道合成
+////        int i=2;
+////        int j =0;
+////        int n = size/4;
+////        for(int k = 1;k<=n;++k){
+////            buffer[i]=buffer2[j];
+////            buffer[i+1]=buffer[j+1];
+////            i+=4;
+////            j+=4;
+////        }
+//        int a = 0;
+//        int b = 0;
+//        int c = 0;
+//        int n = size/4;
+//        for(int k = 1;k<=n;++k){
+//            buffer3[c]=buffer[a];
+//            buffer3[c+1]=buffer[a+1];
+//            buffer3[c+2]=buffer2[b];
+//            buffer3[c+3]=buffer2[b+1];
+//            a+=4;
+//            b+=4;
+//            c+=4;
+//        }
+//
+//        int result = pcm_write(pcm_out, buffer3, size);
+//
+//        std::string output;
+//        for (int i = 0; i < size; ++i) {
+//            output += std::to_string(static_cast<unsigned char>(*(buffer3+i))) + " ";
+////            LOGE("%d",static_cast<int>(static_cast<unsigned char>(buffer[i])));
+//        }
+//        LOGE("合成后：%s", output.c_str());
+//
+//        LOGE("播放结果：%d\n",result);
+//**********************************合成代码*************************************//
+
+
+
+
+
         //3,4复制1，2。
         //声卡是7202时：
         //7202是左声道录制的环境音，所以这里等于是将环境音复制到了右声道，可以播放成功。
         //声卡是817时：
         //817是左声道录制的听诊音，所以这里等于是将听诊音复制到了右声道，可以播放成功。
-        int i=0;
-        int j =2;
-        int n = size/4;
-        for(int k = 1;k<=n;++k){
-            buffer[j]=buffer[i];
-            buffer[j+1]=buffer[i+1];
-            i+=4;
-            j+=4;
-        }
+//        int i=0;
+//        int j =2;
+//        int n = size/4;
+//        for(int k = 1;k<=n;++k){
+//            buffer[j]=buffer[i];
+//            buffer[j+1]=buffer[i+1];
+//            i+=4;
+//            j+=4;
+//        }
 
         //1,2复制3,4
         //声卡是7202时：
@@ -116,15 +198,15 @@ void Player::start_() {
 //        }
 
         int result = pcm_write(pcm_out, buffer, size);
-
-        std::string output;
-        for (int i = 0; i < size; ++i) {
-            output += std::to_string(static_cast<unsigned char>(*(buffer+i))) + " ";
-//            LOGE("%d",static_cast<int>(static_cast<unsigned char>(buffer[i])));
-        }
-        LOGE("%s", output.c_str());
-
-        LOGE("播放结果：%d\n",result);
+//
+//        std::string output;
+//        for (int i = 0; i < size; ++i) {
+//            output += std::to_string(static_cast<unsigned char>(*(buffer+i))) + " ";
+////            LOGE("%d",static_cast<int>(static_cast<unsigned char>(buffer[i])));
+//        }
+//        LOGE("合成后：%s", output.c_str());
+//
+//        LOGE("播放结果：%d\n",result);
     }
 
 }
