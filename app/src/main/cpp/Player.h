@@ -18,6 +18,8 @@ extern "C" {
 class Player {
 private:
     pthread_t pid_play;
+    struct pcm *pcm_in=0;
+    struct pcm *pcm_out=0;
 public:
     Player();
 
@@ -26,6 +28,8 @@ public:
     void start();
 
     void start_();
+
+    void closePcm();
 
 
 };

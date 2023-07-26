@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button btn = binding.sampleText;
         Button btnProp= binding.prop;
+        Button btnClose = binding.close;
 
         RxView.clicks(btn)
                 .compose(rxPermissions.ensure(Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE))
@@ -62,13 +63,13 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this,"属性值: null",Toast.LENGTH_SHORT).show();
 //                    Log.e(TAG, "属性值: null");
                 }
+            }
+        });
 
-
-
-
-
-
-
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closePCM();
             }
         });
 
@@ -86,4 +87,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public native void startPlay();
+    public native void closePCM();
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+    }
 }
