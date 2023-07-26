@@ -7,21 +7,46 @@
 
 #include "Player.h"
 
+
 Player::Player() {
+    header.riff_id = ID_RIFF;
+    header.riff_sz = 0;
+    header.riff_fmt = ID_WAVE;
+    header.fmt_id = ID_FMT;
+    header.fmt_sz = 16;
+    header.audio_format = FORMAT_PCM;
+    header.num_channels = channels;
+    header.sample_rate = rate;
+    header.bits_per_sample = pcm_format_to_bits(format);
+    header.byte_rate = (header.bits_per_sample / 8) * channels * rate;
+    header.block_align = channels * (header.bits_per_sample / 8);
+    header.data_id = ID_DATA;
+
+    memset(&config, 0, sizeof(config));
+    config.channels = 2;
+    config.rate = 44100;
+    config.period_size = 16 * (44100 / 1000);   //16ms算一帧，16ms内有多少采样点
+    config.period_count = 4;    //一个周期内采集几帧？
+    config.format = PCM_FORMAT_S16_LE;
+    config.start_threshold = 0;
+    config.stop_threshold = 0;
+    config.silence_threshold = 0;
 }
 
 void Player::setPath(const char *file_path) {
     this->file_path = new char[strlen(file_path) + 1];
     strcpy(this->file_path, file_path);
-    LOGE("file path is (%s)\n",file_path);
-    if(file){
+    LOGE("file path is (%s)\n", file_path);
+    if (file) {
         fclose(file);
     }
     file = fopen(file_path, "wb");
     if (!file) {
-        LOGE("Unable to create file '%s'\n",file_path);
-    } else{
-        LOGE("open file success '%s'\n",file_path);
+        LOGE("Unable to create file '%s'\n", file_path);
+    } else {
+        LOGE("open file success '%s'\n", file_path);
+        /* leave enough room for header */
+        fseek(file, sizeof(struct wav_header), SEEK_SET);
     }
 }
 
@@ -36,10 +61,10 @@ void Player::start() {
 }
 
 void Player::start_() {
-    struct pcm_config config;
 
-    char *buffer;
-    unsigned int size;
+
+
+
     //**********************************合成代码*************************************//
 //    char *buffer2;
 //    char *buffer3;
@@ -47,24 +72,18 @@ void Player::start_() {
     //**********************************合成代码*************************************//
 
 
-    memset(&config, 0, sizeof(config));
-    config.channels = 2;
-    config.rate = 44100;
-    config.period_size = 16 * (44100 / 1000);   //16ms算一帧，16ms内有多少采样点
-    config.period_count = 4;    //一个周期内采集几帧？
-    config.format = PCM_FORMAT_S16_LE;
-    config.start_threshold = 0;
-    config.stop_threshold = 0;
-    config.silence_threshold = 0;
 
-    pcm_in = pcm_open(0, 0, PCM_IN, &config);
-    if (!pcm_in || !pcm_is_ready(pcm_in)) {
+
+    if (!pcm_in) {
+        pcm_in = pcm_open(0, 0, PCM_IN, &config);
+        if (!pcm_in || !pcm_is_ready(pcm_in)) {
 //        fprintf(stderr, "Unable to open PCM device (%s)\n",
 //                pcm_get_error(pcm_in));
-        LOGE("Unable to open PCM device (%s)\n", pcm_get_error(pcm_in));
-        return;
-    } else {
-        LOGE("pcmC0D0c打开啦");
+            LOGE("Unable to open PCM device (%s)\n", pcm_get_error(pcm_in));
+            return;
+        } else {
+            LOGE("pcmC0D0c打开啦");
+        }
     }
 
     //**********************************合成代码*************************************//
@@ -80,25 +99,33 @@ void Player::start_() {
     //**********************************合成代码*************************************//
 
 
-    pcm_out = pcm_open(0, 0, PCM_OUT, &config);
-    if (!pcm_out || !pcm_is_ready(pcm_out)) {
+    if (!pcm_out) {
+        pcm_out = pcm_open(0, 0, PCM_OUT, &config);
+        if (!pcm_out || !pcm_is_ready(pcm_out)) {
 //        fprintf(stderr, "Unable to open PCM device (%s)\n",
 //                pcm_get_error(pcm_in));
-        LOGE("Unable to open PCM device (%s)\n", pcm_get_error(pcm_out));
-        return;
-    } else {
-        LOGE("pcmC0D0p打开啦");
+            LOGE("Unable to open PCM device (%s)\n", pcm_get_error(pcm_out));
+            return;
+        } else {
+            LOGE("pcmC0D0p打开啦");
+        }
     }
     LOGE("采样点个数：%u", pcm_get_buffer_size(pcm_in));
-    size = pcm_frames_to_bytes(pcm_in, pcm_get_buffer_size(
-            pcm_in));    //pcm_get_buffer_size()是获取一个周期内有多少采样点；
+
+    if (!size) {
+        size = pcm_frames_to_bytes(pcm_in, pcm_get_buffer_size(
+                pcm_in));    //pcm_get_buffer_size()是获取一个周期内有多少采样点；
+    }
     // pcm_frames_to_bytes()是获取一个周期内占用多少字节。
     LOGE("采样点大小计算：%u", pcm_get_buffer_size(pcm_in) * 4);
     LOGE("采样点大小size：%u", size);
 //    LOGE("录音buffer的大小是：%u",size);
 //    int j = pcm_frames_to_bytes(pcm_out, pcm_get_buffer_size(pcm_out));
 //    LOGE("播放buffer的大小是：%u",j);
-    buffer = static_cast<char *>(malloc(size));
+
+    if (!buffer) {
+        buffer = static_cast<char *>(malloc(size));
+    }
     //**********************************合成代码*************************************//
 //    buffer2 = static_cast<char *>(malloc(size));
 //    buffer3 = static_cast<char *>(malloc(size));
@@ -115,11 +142,14 @@ void Player::start_() {
     LOGE("Capturing sample: %u ch, %u hz, %u bit\n", 2, 44100,
          pcm_format_to_bits(PCM_FORMAT_S16_LE));
 
-    while (!pcm_read(pcm_in, buffer, size)) {
+    status=STATUS_PLAYING;
+
+    while (status==STATUS_PLAYING&&!pcm_read(pcm_in, buffer, size)) {
+        LOGE("此时状态%d",status);
         //**********************************合成代码*************************************//
 //    while (!pcm_read(pcm_in, buffer, size)&&!pcm_read(pcm_in_2, buffer2, size)) {
         //**********************************合成代码*************************************//
-        LOGE("录制成功");
+//        LOGE("录制成功");
 //        std::string output;
 //        for (int i = 0; i < size; ++i) {
 //            output += std::to_string(static_cast<unsigned char>(*(buffer+i))) + " ";
@@ -224,6 +254,26 @@ void Player::start_() {
 //        LOGE("合成后：%s", output.c_str());
 //
 //        LOGE("播放结果：%d\n",result);
+
+
+        if (fwrite(buffer, 1, size, file) != size) {
+            LOGE("Error capturing sample\n");
+            break;
+        }
+        bytes_read += size;
+
+
+    }
+    LOGE("此时状态%d",status);
+
+    if(status==STATUS_COMPLETE){
+        unsigned int recFrames = pcm_bytes_to_frames(pcm_in, bytes_read);
+        header.data_sz = recFrames * header.block_align;
+        header.riff_sz = header.data_sz + sizeof(header) - 8;
+        fseek(file, 0, SEEK_SET);
+        fwrite(&header, sizeof(struct wav_header), 1, file);
+
+        fclose(file);
     }
 
 }
@@ -236,3 +286,4 @@ void Player::closePcm() {
         pcm_close(pcm_out);
     }
 }
+

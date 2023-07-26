@@ -565,7 +565,7 @@ int pcm_read(struct pcm *pcm, void *data, unsigned int count)
     x.buf = data;
     x.frames = count / (pcm->config.channels *
                         pcm_format_to_bits(pcm->config.format) / 8);
-    LOGE("pcm_read里：%ld",x.frames);
+//    LOGE("pcm_read里：%ld",x.frames);
     for (;;) {
         if (!pcm->running) {
             if (pcm_start(pcm) < 0) {

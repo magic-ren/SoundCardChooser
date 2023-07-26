@@ -21,6 +21,11 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
+    private static final int STATUS_UNPLAY = 1;
+    private static final int STATUS_PLAYING = 2;
+    private static final int STATUS_PAUSE = 3;
+    private static final int STATUS_COMPLETE = 4;
+
     static {
         System.loadLibrary("tinyalsa_demo");
     }
@@ -41,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         Button btnClose = binding.close;
         Button btnSetPath=binding.setPath;
         Button btnPrepare = binding.prepare;
+        Button btnComplete = binding.complete;
 
         RxView.clicks(btn)
                 .compose(rxPermissions.ensure(Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE))
@@ -78,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         btnSetPath.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setFilePath("/mnt/sdcard/Documents/Records/aaa.wav");
+                setFilePath("/mnt/sdcard/Documents/Records/ccc.wav");
             }
         });
 
@@ -86,6 +92,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 prepare();
+            }
+        });
+
+        btnComplete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                complete();
             }
         });
 
@@ -106,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
     public native void closePCM();
     public native void setFilePath(String path);
     public native void prepare();
+    public native void complete();
 
 
     @Override
