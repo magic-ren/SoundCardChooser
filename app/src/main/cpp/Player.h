@@ -12,6 +12,12 @@
 #include <pthread.h>
 #include <cstring>
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <signal.h>
+#include <time.h>
+
 extern "C" {
 #include "asoundlib.h"
 };
@@ -19,11 +25,12 @@ extern "C" {
 class Player {
 private:
     char *file_path = 0;
+    FILE *file = 0;
     pthread_t pid_play;
     struct pcm *pcm_in=0;
     struct pcm *pcm_out=0;
 public:
-    Player(const char *file_path);
+    Player();
 
     ~Player();
 
@@ -32,6 +39,8 @@ public:
     void start_();
 
     void closePcm();
+
+    void setPath(const char *file_path);
 
 
 };

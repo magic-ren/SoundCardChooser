@@ -7,10 +7,22 @@
 
 #include "Player.h"
 
-Player::Player(const char *file_path) {
+Player::Player() {
+}
+
+void Player::setPath(const char *file_path) {
     this->file_path = new char[strlen(file_path) + 1];
     strcpy(this->file_path, file_path);
     LOGE("file path is (%s)\n",file_path);
+    if(file){
+        fclose(file);
+    }
+    file = fopen(file_path, "wb");
+    if (!file) {
+        LOGE("Unable to create file '%s'\n",file_path);
+    } else{
+        LOGE("open file success '%s'\n",file_path);
+    }
 }
 
 void *task_start(void *args) {
