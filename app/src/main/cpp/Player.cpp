@@ -7,7 +7,11 @@
 
 #include "Player.h"
 
-Player::Player() {}
+Player::Player(const char *file_path) {
+    this->file_path = new char[strlen(file_path) + 1];
+    strcpy(this->file_path, file_path);
+    LOGE("file path is (%s)\n",file_path);
+}
 
 void *task_start(void *args) {
     Player *player = static_cast<Player *>(args);

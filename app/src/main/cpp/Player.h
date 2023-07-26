@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <string>
 #include <pthread.h>
+#include <cstring>
 
 extern "C" {
 #include "asoundlib.h"
@@ -17,11 +18,12 @@ extern "C" {
 
 class Player {
 private:
+    char *file_path = 0;
     pthread_t pid_play;
     struct pcm *pcm_in=0;
     struct pcm *pcm_out=0;
 public:
-    Player();
+    Player(const char *file_path);
 
     ~Player();
 

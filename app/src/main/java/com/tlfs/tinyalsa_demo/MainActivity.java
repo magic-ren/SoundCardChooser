@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         Button btn = binding.sampleText;
         Button btnProp= binding.prop;
         Button btnClose = binding.close;
+        Button btnSetPath=binding.setPath;
 
         RxView.clicks(btn)
                 .compose(rxPermissions.ensure(Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE))
@@ -73,6 +74,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btnSetPath.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setFilePath("/sdcard/test_5.wav");
+            }
+        });
+
     }
 
     public String getCustomProperty(String key) {
@@ -88,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
 
     public native void startPlay();
     public native void closePCM();
+    public native void setFilePath(String path);
+
 
     @Override
     protected void onDestroy() {
