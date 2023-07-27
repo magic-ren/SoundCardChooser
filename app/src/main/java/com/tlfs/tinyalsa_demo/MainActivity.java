@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         btnSetPath.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setFilePath("/mnt/sdcard/Documents/Records/ccc.wav");
+                setFilePath("/mnt/sdcard/Documents/Records/iii.wav");
             }
         });
 

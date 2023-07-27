@@ -87,15 +87,15 @@ void Player::start_() {
     }
 
     //**********************************合成代码*************************************//
-//    pcm_in_2 = pcm_open(2, 0, PCM_IN, &config);
-//    if (!pcm_in_2 || !pcm_is_ready(pcm_in_2)) {
-////        fprintf(stderr, "Unable to open PCM device (%s)\n",
-////                pcm_get_error(pcm_in));
-//        LOGE("Unable to open PCM device (%s)\n",pcm_get_error(pcm_in_2));
-//        return;
-//    } else{
-//        LOGE("pcmC0D2c打开啦");
-//    }
+    pcm_in_2 = pcm_open(2, 0, PCM_IN, &config);
+    if (!pcm_in_2 || !pcm_is_ready(pcm_in_2)) {
+//        fprintf(stderr, "Unable to open PCM device (%s)\n",
+//                pcm_get_error(pcm_in));
+        LOGE("Unable to open PCM device (%s)\n",pcm_get_error(pcm_in_2));
+        return;
+    } else{
+        LOGE("pcmC0D2c打开啦");
+    }
     //**********************************合成代码*************************************//
 
 
@@ -127,8 +127,8 @@ void Player::start_() {
         buffer = static_cast<char *>(malloc(size));
     }
     //**********************************合成代码*************************************//
-//    buffer2 = static_cast<char *>(malloc(size));
-//    buffer3 = static_cast<char *>(malloc(size));
+    buffer2 = static_cast<char *>(malloc(size));
+    buffer3 = static_cast<char *>(malloc(size));
     //**********************************合成代码*************************************//
     if (!buffer) {
         LOGE("Unable to allocate %u bytes\n", size);
@@ -144,10 +144,11 @@ void Player::start_() {
 
     status=STATUS_PLAYING;
 
-    while (status==STATUS_PLAYING&&!pcm_read(pcm_in, buffer, size)) {
-        LOGE("此时状态%d",status);
+//    while (status==STATUS_PLAYING&&!pcm_read(pcm_in, buffer, size)) {
+//        LOGE("此时状态%d",status);
         //**********************************合成代码*************************************//
 //    while (!pcm_read(pcm_in, buffer, size)&&!pcm_read(pcm_in_2, buffer2, size)) {
+    while (status==STATUS_PLAYING&&!pcm_read(pcm_in, buffer, size)&&!pcm_read(pcm_in_2, buffer2, size)) {
         //**********************************合成代码*************************************//
 //        LOGE("录制成功");
 //        std::string output;
@@ -159,55 +160,55 @@ void Player::start_() {
 
 
 //**********************************合成代码*************************************//
-//        std::string output1;
-//        for (int i = 0; i < size; ++i) {
-//            output1 += std::to_string(static_cast<unsigned char>(*(buffer+i))) + " ";
-////            LOGE("%d",static_cast<int>(static_cast<unsigned char>(buffer[i])));
-//        }
-//        LOGE("817合成前：%s", output1.c_str());
-//
-//        std::string output2;
-//        for (int i = 0; i < size; ++i) {
-//            output2 += std::to_string(static_cast<unsigned char>(*(buffer2+i))) + " ";
-////            LOGE("%d",static_cast<int>(static_cast<unsigned char>(buffer[i])));
-//        }
-//        LOGE("7202合成前：%s", output2.c_str());
-//
-//
-//        //将817的左声道和7202的左声道合成
-////        int i=2;
-////        int j =0;
-////        int n = size/4;
-////        for(int k = 1;k<=n;++k){
-////            buffer[i]=buffer2[j];
-////            buffer[i+1]=buffer[j+1];
-////            i+=4;
-////            j+=4;
-////        }
-//        int a = 0;
-//        int b = 0;
-//        int c = 0;
+        std::string output1;
+        for (int i = 0; i < size; ++i) {
+            output1 += std::to_string(static_cast<unsigned char>(*(buffer+i))) + " ";
+//            LOGE("%d",static_cast<int>(static_cast<unsigned char>(buffer[i])));
+        }
+        LOGE("817合成前：%s", output1.c_str());
+
+        std::string output2;
+        for (int i = 0; i < size; ++i) {
+            output2 += std::to_string(static_cast<unsigned char>(*(buffer2+i))) + " ";
+//            LOGE("%d",static_cast<int>(static_cast<unsigned char>(buffer[i])));
+        }
+        LOGE("7202合成前：%s", output2.c_str());
+
+
+        //将817的左声道和7202的左声道合成
+//        int i=2;
+//        int j =0;
 //        int n = size/4;
 //        for(int k = 1;k<=n;++k){
-//            buffer3[c]=buffer[a];
-//            buffer3[c+1]=buffer[a+1];
-//            buffer3[c+2]=buffer2[b];
-//            buffer3[c+3]=buffer2[b+1];
-//            a+=4;
-//            b+=4;
-//            c+=4;
+//            buffer[i]=buffer2[j];
+//            buffer[i+1]=buffer[j+1];
+//            i+=4;
+//            j+=4;
 //        }
-//
-//        int result = pcm_write(pcm_out, buffer3, size);
-//
-//        std::string output;
-//        for (int i = 0; i < size; ++i) {
-//            output += std::to_string(static_cast<unsigned char>(*(buffer3+i))) + " ";
-////            LOGE("%d",static_cast<int>(static_cast<unsigned char>(buffer[i])));
-//        }
-//        LOGE("合成后：%s", output.c_str());
-//
-//        LOGE("播放结果：%d\n",result);
+        int a = 0;
+        int b = 0;
+        int c = 0;
+        int n = size/4;
+        for(int k = 1;k<=n;++k){
+            buffer3[c]=buffer[a];
+            buffer3[c+1]=buffer[a+1];
+            buffer3[c+2]=buffer2[b];
+            buffer3[c+3]=buffer2[b+1];
+            a+=4;
+            b+=4;
+            c+=4;
+        }
+
+        int result = pcm_write(pcm_out, buffer3, size);
+
+        std::string output;
+        for (int i = 0; i < size; ++i) {
+            output += std::to_string(static_cast<unsigned char>(*(buffer3+i))) + " ";
+//            LOGE("%d",static_cast<int>(static_cast<unsigned char>(buffer[i])));
+        }
+        LOGE("合成后：%s", output.c_str());
+
+        LOGE("播放结果：%d\n",result);
 //**********************************合成代码*************************************//
 
 
@@ -244,7 +245,7 @@ void Player::start_() {
 //            j+=4;
 //        }
 
-        int result = pcm_write(pcm_out, buffer, size);
+//        int result = pcm_write(pcm_out, buffer, size);
 //
 //        std::string output;
 //        for (int i = 0; i < size; ++i) {
@@ -256,7 +257,7 @@ void Player::start_() {
 //        LOGE("播放结果：%d\n",result);
 
 
-        if (fwrite(buffer, 1, size, file) != size) {
+        if (fwrite(buffer3, 1, size, file) != size) {
             LOGE("Error capturing sample\n");
             break;
         }
@@ -267,7 +268,7 @@ void Player::start_() {
     LOGE("此时状态%d",status);
 
     if(status==STATUS_COMPLETE){
-        unsigned int recFrames = pcm_bytes_to_frames(pcm_in, bytes_read);
+        unsigned int recFrames = pcm_bytes_to_frames(pcm_out, bytes_read);
         header.data_sz = recFrames * header.block_align;
         header.riff_sz = header.data_sz + sizeof(header) - 8;
         fseek(file, 0, SEEK_SET);

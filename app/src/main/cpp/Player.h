@@ -73,6 +73,12 @@ private:
 
     unsigned int bytes_read = 0;
 
+    //**********************************合成代码*************************************//
+    char *buffer2;
+    char *buffer3;
+    struct pcm *pcm_in_2;
+    //**********************************合成代码*************************************//
+
 public:
     int status = STATUS_UNPLAY;
 
