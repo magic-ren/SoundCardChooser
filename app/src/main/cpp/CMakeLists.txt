@@ -2,10 +2,9 @@
 cmake_minimum_required(VERSION 3.18.1)
 
 
-
 project("tinyalsa_demo")
 
-file(GLOB src_files *.cpp *.h *.c)
+file(GLOB src_files *.cpp *.h *.c tinymix.c)
 
 add_library(
         tinyalsa_demo
@@ -13,11 +12,9 @@ add_library(
         ${src_files})
 
 
-
 find_library(
         log-lib
         log)
-
 
 
 target_link_libraries(

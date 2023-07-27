@@ -42,14 +42,15 @@ public class MainActivity extends AppCompatActivity {
         final RxPermissions rxPermissions = new RxPermissions(this);
 
         Button btn = binding.sampleText;
-        Button btnProp= binding.prop;
+        Button btnProp = binding.prop;
         Button btnClose = binding.close;
-        Button btnSetPath=binding.setPath;
+        Button btnSetPath = binding.setPath;
         Button btnPrepare = binding.prepare;
         Button btnComplete = binding.complete;
+        Button btnSetMix = binding.setMix;
 
         RxView.clicks(btn)
-                .compose(rxPermissions.ensure(Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE))
+                .compose(rxPermissions.ensure(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE))
                 .subscribe(granted -> {
                     if (granted) {
                         startPlay();
@@ -64,11 +65,11 @@ public class MainActivity extends AppCompatActivity {
                 String customPropertyValue = getCustomProperty("voice.mode");
                 if (!TextUtils.isEmpty(customPropertyValue)) {
                     // 在这里处理获取到的自定义属性值
-                    Toast.makeText(MainActivity.this,"属性值: "+customPropertyValue,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "属性值: " + customPropertyValue, Toast.LENGTH_SHORT).show();
 //                    Log.e(TAG, "属性值: "+customPropertyValue);
                 } else {
                     // 自定义属性不存在或无法获取其值
-                    Toast.makeText(MainActivity.this,"属性值: null",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "属性值: null", Toast.LENGTH_SHORT).show();
 //                    Log.e(TAG, "属性值: null");
                 }
             }
@@ -102,6 +103,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btnSetMix.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setMixArgs();
+            }
+        });
     }
 
     public String getCustomProperty(String key) {
@@ -116,10 +123,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public native void startPlay();
+
     public native void closePCM();
+
     public native void setFilePath(String path);
+
     public native void prepare();
+
     public native void complete();
+
+    public native void setMixArgs();
 
 
     @Override

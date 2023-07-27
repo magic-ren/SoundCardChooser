@@ -18,11 +18,18 @@
 #include <signal.h>
 #include <time.h>
 
+#include <errno.h>
+#include <ctype.h>
+#include <getopt.h>
+
 #include "util.h"
 
 extern "C" {
 #include "asoundlib.h"
 };
+
+extern "C" int tinymix_set_value(struct mixer *mixer, const char *control,
+                                 char **values, unsigned int num_values);
 
 #define ID_RIFF 0x46464952
 #define ID_WAVE 0x45564157
@@ -52,8 +59,8 @@ private:
     char *file_path = 0;
     FILE *file = 0;
     pthread_t pid_play;
-    struct pcm *pcm_in=0;
-    struct pcm *pcm_out=0;
+    struct pcm *pcm_in = 0;
+    struct pcm *pcm_out = 0;
     struct wav_header header;
 
     unsigned int card = 0;
@@ -65,11 +72,11 @@ private:
     unsigned int period_size = 1024;
     unsigned int period_count = 4;
     unsigned int cap_time = 0;
-    enum pcm_format format=PCM_FORMAT_S16_LE;
+    enum pcm_format format = PCM_FORMAT_S16_LE;
 
     struct pcm_config config;
-    char *buffer=0;
-    unsigned int size=0;
+    char *buffer = 0;
+    unsigned int size = 0;
 
     unsigned int bytes_read = 0;
 
@@ -78,6 +85,8 @@ private:
     char *buffer3;
     struct pcm *pcm_in_2;
     //**********************************合成代码*************************************//
+
+    struct mixer *mixer = 0;
 
 public:
     int status = STATUS_UNPLAY;
@@ -93,6 +102,8 @@ public:
     void closePcm();
 
     void setPath(const char *file_path);
+
+    void setMixArgs();
 
 };
 
