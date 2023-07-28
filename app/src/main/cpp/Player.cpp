@@ -98,17 +98,19 @@ void Player::start_() {
     //**********************************合成代码*************************************//
 
 
-    if (!pcm_out) {
-        pcm_out = pcm_open(0, 0, PCM_OUT, &config);
-        if (!pcm_out || !pcm_is_ready(pcm_out)) {
-//        fprintf(stderr, "Unable to open PCM device (%s)\n",
-//                pcm_get_error(pcm_in));
-            LOGE("Unable to open PCM device (%s)\n", pcm_get_error(pcm_out));
-            return;
-        } else {
-            LOGE("pcmC0D0p打开啦");
-        }
-    }
+    //**********************************播放代码*************************************//
+//    if (!pcm_out) {
+//        pcm_out = pcm_open(0, 0, PCM_OUT, &config);
+//        if (!pcm_out || !pcm_is_ready(pcm_out)) {
+////        fprintf(stderr, "Unable to open PCM device (%s)\n",
+////                pcm_get_error(pcm_in));
+//            LOGE("Unable to open PCM device (%s)\n", pcm_get_error(pcm_out));
+//            return;
+//        } else {
+//            LOGE("pcmC0D0p打开啦");
+//        }
+//    }
+    //**********************************播放代码*************************************//
     LOGE("采样点个数：%u", pcm_get_buffer_size(pcm_in));
 
     if (!size) {
@@ -133,7 +135,9 @@ void Player::start_() {
         LOGE("Unable to allocate %u bytes\n", size);
         free(buffer);
         pcm_close(pcm_in);
-        pcm_close(pcm_out);
+        //**********************************播放代码*************************************//
+//        pcm_close(pcm_out);
+        //**********************************播放代码*************************************//
         return;
     } else {
         LOGE("buffer初始化啦");
@@ -198,8 +202,9 @@ void Player::start_() {
             b += 4;
             c += 4;
         }
-
-        int result = pcm_write(pcm_out, buffer3, size);
+        //**********************************播放代码*************************************//
+//        int result = pcm_write(pcm_out, buffer3, size);
+        //**********************************播放代码*************************************//
 
         std::string output;
         for (int i = 0; i < size; ++i) {
@@ -208,7 +213,9 @@ void Player::start_() {
         }
         LOGE("合成后：%s", output.c_str());
 
-        LOGE("播放结果：%d\n", result);
+        //**********************************播放代码*************************************//
+//        LOGE("播放结果：%d\n", result);
+        //**********************************播放代码*************************************//
 //**********************************合成代码*************************************//
 
 
@@ -268,7 +275,7 @@ void Player::start_() {
     LOGE("此时状态%d", status);
 
     if (status == STATUS_COMPLETE) {
-        unsigned int recFrames = pcm_bytes_to_frames(pcm_out, bytes_read);
+        unsigned int recFrames = pcm_bytes_to_frames(pcm_in, bytes_read);
         header.data_sz = recFrames * header.block_align;
         header.riff_sz = header.data_sz + sizeof(header) - 8;
         fseek(file, 0, SEEK_SET);
@@ -283,9 +290,11 @@ void Player::closePcm() {
     if (pcm_in) {
         pcm_close(pcm_in);
     }
-    if (pcm_out) {
-        pcm_close(pcm_out);
-    }
+    //**********************************播放代码*************************************//
+//    if (pcm_out) {
+//        pcm_close(pcm_out);
+//    }
+    //**********************************播放代码*************************************//
 }
 
 void Player::setMixArgs() {
