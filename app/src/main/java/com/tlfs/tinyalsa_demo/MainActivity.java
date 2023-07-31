@@ -3,6 +3,9 @@ package com.tlfs.tinyalsa_demo;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,16 +24,11 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    private static final int STATUS_UNPLAY = 1;
-    private static final int STATUS_PLAYING = 2;
-    private static final int STATUS_PAUSE = 3;
-    private static final int STATUS_COMPLETE = 4;
-
-    static {
-        System.loadLibrary("tinyalsa_demo");
-    }
 
     private ActivityMainBinding binding;
+
+    Player mPlayer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         final RxPermissions rxPermissions = new RxPermissions(this);
+
+        mPlayer = new Player();
 
         Button btn = binding.sampleText;
         Button btnProp = binding.prop;
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 .compose(rxPermissions.ensure(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE))
                 .subscribe(granted -> {
                     if (granted) {
-                        startPlay();
+                        mPlayer.startPlay();
                     } else {
                         Toast.makeText(MainActivity.this, "权限被拒绝，无法录制音频！", Toast.LENGTH_SHORT).show();
                     }
@@ -78,35 +78,35 @@ public class MainActivity extends AppCompatActivity {
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                closePCM();
+                mPlayer.closePCM();
             }
         });
 
         btnSetPath.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setFilePath("/mnt/sdcard/Documents/Records/3.wav");
+                mPlayer.setFilePath("/mnt/sdcard/Documents/Records/3.wav");
             }
         });
 
         btnPrepare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                prepare();
+                mPlayer.prepare();
             }
         });
 
         btnComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                complete();
+                mPlayer.complete();
             }
         });
 
         btnSetMix.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setMixArgs();
+                mPlayer.setMixArgs();
             }
         });
     }
@@ -121,18 +121,6 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
-
-    public native void startPlay();
-
-    public native void closePCM();
-
-    public native void setFilePath(String path);
-
-    public native void prepare();
-
-    public native void complete();
-
-    public native void setMixArgs();
 
 
     @Override

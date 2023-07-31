@@ -24,6 +24,8 @@
 
 #include "util.h"
 
+#include "JNICallbackHelper.h"
+
 extern "C" {
 #include "asoundlib.h"
 };
@@ -88,10 +90,12 @@ private:
 
     struct mixer *mixer = 0;
 
+    JNICallbackHelper *jniCallbackHelper = 0;
+
 public:
     int status = STATUS_UNPLAY;
 
-    Player();
+    Player(JNICallbackHelper *jniCallbackHelper);
 
     ~Player();
 

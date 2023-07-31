@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.18.1)
 
 project("tinyalsa_demo")
 
-file(GLOB src_files *.cpp *.h *.c tinymix.c)
+file(GLOB src_files *.cpp *.h *.c tinymix.c JNICallbackHelper.h JNICallbackHelper.cpp)
 
 add_library(
         tinyalsa_demo

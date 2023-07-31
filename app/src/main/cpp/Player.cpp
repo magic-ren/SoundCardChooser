@@ -7,7 +7,9 @@
 
 #include "Player.h"
 
-Player::Player() {
+Player::Player(JNICallbackHelper *jniCallbackHelper) {
+    this->jniCallbackHelper = jniCallbackHelper;
+
     header.riff_id = ID_RIFF;
     header.riff_sz = 0;
     header.riff_fmt = ID_WAVE;
@@ -205,6 +207,9 @@ void Player::start_() {
         //**********************************播放代码*************************************//
 //        int result = pcm_write(pcm_out, buffer3, size);
         //**********************************播放代码*************************************//
+        if (jniCallbackHelper) {
+            jniCallbackHelper->onCallback(buffer3, size);
+        }
 
         std::string output;
         for (int i = 0; i < size; ++i) {
