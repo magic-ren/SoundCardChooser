@@ -1,8 +1,11 @@
 package com.tlfs.tinyalsa_demo;
 
+import android.content.Intent;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 /**
@@ -17,9 +20,14 @@ public class Player {
     private static final int STATUS_COMPLETE = 4;
 
     private AudioTrack audioTrack;
+    private IJump iJump;
 
     static {
         System.loadLibrary("tinyalsa_demo");
+    }
+
+    public Player(IJump iJump) {
+        this.iJump = iJump;
     }
 
     public native void startPlay();
@@ -49,5 +57,15 @@ public class Player {
         Log.e("RDD", "onAudioDataCallback: " + audioTrack.hashCode());
         audioTrack.play();
         audioTrack.write(data, 0, size);
+    }
+
+    private void onCompleteCallback(String path) {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                iJump.jumpActivity(path);
+            }
+        });
     }
 }

@@ -308,6 +308,12 @@ void Player::start_() {
         fseek(file, 0, SEEK_SET);
         fwrite(&header, sizeof(struct wav_header), 1, file);
         fclose(file);
+        if (jniCallbackHelper) {
+            jniCallbackHelper->onJumpCallback(file_path);
+        }
+        delete file_path;
+        file_path = 0;
+        file = 0;
     }
     if (status == STATUS_UNPLAY) {
         fclose(file);

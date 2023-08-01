@@ -16,12 +16,15 @@ private:
     JNIEnv *env_main = 0;
     jobject job;
     jmethodID jmd_callback;
+    jmethodID jmd_jump_callback;
 public:
     JNICallbackHelper(JavaVM *vm, JNIEnv *env, jobject job);
 
     ~JNICallbackHelper();
 
     void onCallback(char *data, int size);
+
+    void onJumpCallback(char *path);
 };
 
 

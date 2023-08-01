@@ -3,6 +3,7 @@ package com.tlfs.tinyalsa_demo;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -20,7 +21,7 @@ import com.tlfs.tinyalsa_demo.databinding.ActivityMainBinding;
 
 import java.lang.reflect.Method;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IJump {
 
     private static final String TAG = "MainActivity";
 
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         final RxPermissions rxPermissions = new RxPermissions(this);
 
-        mPlayer = new Player();
+        mPlayer = new Player(MainActivity.this);
 
         Button btn = binding.sampleText;
         Button btnProp = binding.prop;
@@ -152,5 +153,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
 
         super.onDestroy();
+    }
+
+    @Override
+    public void jumpActivity(String path) {
+        Intent intent = new Intent(MainActivity.this, TargetActivity.class);
+        intent.putExtra("path", path);
+        startActivity(intent);
     }
 }
