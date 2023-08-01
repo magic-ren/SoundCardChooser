@@ -92,6 +92,9 @@ private:
 
     JNICallbackHelper *jniCallbackHelper = 0;
 
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+
 public:
     int status = STATUS_UNPLAY;
 
@@ -108,6 +111,10 @@ public:
     void setPath(const char *file_path);
 
     void setMixArgs();
+
+    void pause();
+
+    void continuePlay();
 
 };
 

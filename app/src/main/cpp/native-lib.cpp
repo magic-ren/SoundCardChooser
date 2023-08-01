@@ -56,3 +56,17 @@ Java_com_tlfs_tinyalsa_1demo_Player_setMixArgs(JNIEnv *env, jobject thiz) {
         player->setMixArgs();
     }
 }
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_tlfs_tinyalsa_1demo_Player_pause(JNIEnv *env, jobject thiz) {
+    if (player) {
+        player->pause();
+    }
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_tlfs_tinyalsa_1demo_Player_continuePlay(JNIEnv *env, jobject thiz) {
+    if (player) {
+        player->continuePlay();
+    }
+}

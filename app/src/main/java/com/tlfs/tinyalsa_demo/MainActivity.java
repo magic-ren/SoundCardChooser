@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         Button btnPrepare = binding.prepare;
         Button btnComplete = binding.complete;
         Button btnSetMix = binding.setMix;
+        Button btnPause = binding.pause;
+        Button btnContinue = binding.continuePlay;
 
         RxView.clicks(btn)
                 .compose(rxPermissions.ensure(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE))
@@ -108,6 +110,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mPlayer.setMixArgs();
+            }
+        });
+
+        btnPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPlayer.pause();
+            }
+        });
+
+        btnContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPlayer.continuePlay();
             }
         });
     }

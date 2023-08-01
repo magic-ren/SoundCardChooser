@@ -34,11 +34,17 @@ public class Player {
 
     public native void setMixArgs();
 
+    public native void pause();
+
+    public native void continuePlay();
+
     private void onAudioDataCallback(byte[] data, int size) {
+
         if (audioTrack == null) {
             audioTrack = new AudioTrack(AudioManager.STREAM_VOICE_CALL, 44100, AudioFormat.CHANNEL_OUT_STEREO,
                     AudioFormat.ENCODING_PCM_16BIT, size, AudioTrack.MODE_STREAM);
         }
+        Log.e("RDD", "onAudioDataCallback: " + audioTrack.hashCode());
         audioTrack.play();
         audioTrack.write(data, 0, size);
     }

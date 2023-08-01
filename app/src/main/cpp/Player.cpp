@@ -8,6 +8,9 @@
 #include "Player.h"
 
 Player::Player(JNICallbackHelper *jniCallbackHelper) {
+    pthread_mutex_init(&mutex, 0);
+    pthread_cond_init(&cond, 0);
+
     this->jniCallbackHelper = jniCallbackHelper;
 
     header.riff_id = ID_RIFF;
@@ -32,6 +35,11 @@ Player::Player(JNICallbackHelper *jniCallbackHelper) {
     config.start_threshold = 0;
     config.stop_threshold = 0;
     config.silence_threshold = 0;
+}
+
+Player::~Player() {
+    pthread_mutex_destroy(&mutex);
+    pthread_cond_destroy(&cond);
 }
 
 void Player::setPath(const char *file_path) {
@@ -153,8 +161,15 @@ void Player::start_() {
 //        LOGE("此时状态%d",status);
     //**********************************合成代码*************************************//
 //    while (!pcm_read(pcm_in, buffer, size)&&!pcm_read(pcm_in_2, buffer2, size)) {
-    while (status == STATUS_PLAYING && !pcm_read(pcm_in, buffer, size) &&
+    while (status != STATUS_COMPLETE && !pcm_read(pcm_in, buffer, size) &&
            !pcm_read(pcm_in_2, buffer2, size)) {
+
+        pthread_mutex_lock(&mutex);
+        if (status == STATUS_PAUSE) {
+            pthread_cond_wait(&cond, &mutex);
+        }
+        pthread_mutex_unlock(&mutex);
+
         //**********************************合成代码*************************************//
 //        LOGE("录制成功");
 //        std::string output;
@@ -333,3 +348,15 @@ void Player::setMixArgs() {
     }
 }
 
+void Player::pause() {
+    pthread_mutex_lock(&mutex);
+    status = STATUS_PAUSE;
+    pthread_mutex_unlock(&mutex);
+}
+
+void Player::continuePlay() {
+    pthread_mutex_lock(&mutex);
+    status = STATUS_PLAYING;
+    pthread_cond_signal(&cond);
+    pthread_mutex_unlock(&mutex);
+}
