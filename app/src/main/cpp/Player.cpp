@@ -96,14 +96,16 @@ void Player::start_() {
     }
 
     //**********************************合成代码*************************************//
-    pcm_in_2 = pcm_open(2, 0, PCM_IN, &config);
-    if (!pcm_in_2 || !pcm_is_ready(pcm_in_2)) {
+    if (!pcm_in_2) {
+        pcm_in_2 = pcm_open(2, 0, PCM_IN, &config);
+        if (!pcm_in_2 || !pcm_is_ready(pcm_in_2)) {
 //        fprintf(stderr, "Unable to open PCM device (%s)\n",
 //                pcm_get_error(pcm_in));
-        LOGE("Unable to open PCM device (%s)\n", pcm_get_error(pcm_in_2));
-        return;
-    } else {
-        LOGE("pcmC0D2c打开啦");
+            LOGE("Unable to open PCM device (%s)\n", pcm_get_error(pcm_in_2));
+            return;
+        } else {
+            LOGE("pcmC0D2c打开啦");
+        }
     }
     //**********************************合成代码*************************************//
 
@@ -138,8 +140,12 @@ void Player::start_() {
         buffer = static_cast<char *>(malloc(size));
     }
     //**********************************合成代码*************************************//
-    buffer2 = static_cast<char *>(malloc(size));
-    buffer3 = static_cast<char *>(malloc(size));
+    if (!buffer2) {
+        buffer2 = static_cast<char *>(malloc(size));
+    }
+    if (!buffer3) {
+        buffer3 = static_cast<char *>(malloc(size));
+    }
     //**********************************合成代码*************************************//
     if (!buffer) {
         LOGE("Unable to allocate %u bytes\n", size);
@@ -161,7 +167,8 @@ void Player::start_() {
 //        LOGE("此时状态%d",status);
     //**********************************合成代码*************************************//
 //    while (!pcm_read(pcm_in, buffer, size)&&!pcm_read(pcm_in_2, buffer2, size)) {
-    while (status != STATUS_COMPLETE && !pcm_read(pcm_in, buffer, size) &&
+    while (status != STATUS_COMPLETE && status != STATUS_UNPLAY &&
+           !pcm_read(pcm_in, buffer, size) &&
            !pcm_read(pcm_in_2, buffer2, size)) {
 
         pthread_mutex_lock(&mutex);
@@ -300,9 +307,16 @@ void Player::start_() {
         header.riff_sz = header.data_sz + sizeof(header) - 8;
         fseek(file, 0, SEEK_SET);
         fwrite(&header, sizeof(struct wav_header), 1, file);
-
         fclose(file);
     }
+    if (status == STATUS_UNPLAY) {
+        fclose(file);
+        remove(file_path);
+        delete file_path;
+        file_path = 0;
+        file = 0;
+    }
+
 
 }
 
@@ -358,5 +372,11 @@ void Player::continuePlay() {
     pthread_mutex_lock(&mutex);
     status = STATUS_PLAYING;
     pthread_cond_signal(&cond);
+    pthread_mutex_unlock(&mutex);
+}
+
+void Player::reset() {
+    pthread_mutex_lock(&mutex);
+    status = STATUS_UNPLAY;
     pthread_mutex_unlock(&mutex);
 }

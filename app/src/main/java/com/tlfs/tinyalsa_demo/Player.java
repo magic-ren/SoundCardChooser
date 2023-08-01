@@ -38,6 +38,8 @@ public class Player {
 
     public native void continuePlay();
 
+    public native void reset();
+
     private void onAudioDataCallback(byte[] data, int size) {
 
         if (audioTrack == null) {

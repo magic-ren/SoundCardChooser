@@ -83,9 +83,9 @@ private:
     unsigned int bytes_read = 0;
 
     //**********************************合成代码*************************************//
-    char *buffer2;
-    char *buffer3;
-    struct pcm *pcm_in_2;
+    char *buffer2 = 0;
+    char *buffer3 = 0;
+    struct pcm *pcm_in_2 = 0;
     //**********************************合成代码*************************************//
 
     struct mixer *mixer = 0;
@@ -115,6 +115,8 @@ public:
     void pause();
 
     void continuePlay();
+
+    void reset();
 
 };
 

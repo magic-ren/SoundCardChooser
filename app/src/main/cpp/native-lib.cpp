@@ -70,3 +70,10 @@ Java_com_tlfs_tinyalsa_1demo_Player_continuePlay(JNIEnv *env, jobject thiz) {
         player->continuePlay();
     }
 }
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_tlfs_tinyalsa_1demo_Player_reset(JNIEnv *env, jobject thiz) {
+    if (player) {
+        player->reset();
+    }
+}
