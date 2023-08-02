@@ -5,7 +5,7 @@
 #ifndef TINYALSA_DEMO_PLAYER_H
 #define TINYALSA_DEMO_PLAYER_H
 
-#include "log4c.h"
+#include "../utils/log4c.h"
 #include <string.h>
 #include <cstdlib>
 #include <string>
@@ -22,16 +22,16 @@
 #include <ctype.h>
 #include <getopt.h>
 
-#include "util.h"
+#include "consts.h"
 
 #include "JNICallbackHelper.h"
 
 
-#include "SoundPlayStrategyFactory.h"
+#include "sound_play_strategy/factory/SoundPlayStrategyFactory.h"
 
 
 extern "C" {
-#include "asoundlib.h"
+#include "../tinyalsa/asoundlib.h"
 };
 
 extern "C" int tinymix_set_value(struct mixer *mixer, const char *control,

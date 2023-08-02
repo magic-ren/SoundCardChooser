@@ -7,7 +7,7 @@
 
 
 #include <jni.h>
-#include "log4c.h"
+#include "../utils/log4c.h"
 
 
 class JNICallbackHelper {

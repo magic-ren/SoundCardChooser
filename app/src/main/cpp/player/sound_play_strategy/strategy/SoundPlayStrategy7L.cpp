@@ -1,14 +1,14 @@
 //
 // Created by Administrator on 2023/8/2.
 //
+#include "SoundPlayStrategy7L.h"
+#include "../../Player.h"
 
-#include "SoundPlayStrategy8L.h"
-#include "Player.h"
+SoundPlayStrategy7L::SoundPlayStrategy7L(Player *player) : SoundPlayStrategy(player) {}
 
-SoundPlayStrategy8L::SoundPlayStrategy8L(Player *player) : SoundPlayStrategy(player) {}
-
-int SoundPlayStrategy8L::playSound() {
+int SoundPlayStrategy7L::playSound() {
     return -1;
+//
 //    //**********************************合成代码*************************************//
 ////    char *buffer2;
 ////    char *buffer3;
@@ -18,7 +18,7 @@ int SoundPlayStrategy8L::playSound() {
 //
 //
 //
-//    if (!pcm_in) {
+//    if (!playerPtr->pcm_in) {
 //        pcm_in = pcm_open(0, 0, PCM_IN, &config);
 //        if (!pcm_in || !pcm_is_ready(pcm_in)) {
 ////        fprintf(stderr, "Unable to open PCM device (%s)\n",

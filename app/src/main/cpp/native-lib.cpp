@@ -1,9 +1,9 @@
 #include <jni.h>
 #include <string>
-#include "Player.h"
-#include "util.h"
-#include "log4c.h"
-#include "JNICallbackHelper.h"
+#include "player/Player.h"
+#include "player/consts.h"
+#include "utils/log4c.h"
+#include "player/JNICallbackHelper.h"
 
 Player *player = 0;
 JavaVM *vm = 0;

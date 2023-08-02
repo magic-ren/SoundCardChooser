@@ -6,7 +6,7 @@
 #define TINYALSA_DEMO_SOUNDPLAYSTRATEGY_H
 
 extern "C" {
-#include "asoundlib.h"
+#include "../../../tinyalsa/asoundlib.h"
 };
 
 class Player;

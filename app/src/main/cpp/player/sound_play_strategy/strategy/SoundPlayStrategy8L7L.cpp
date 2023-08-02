@@ -3,7 +3,7 @@
 //
 
 #include "SoundPlayStrategy8L7L.h"
-#include "Player.h"
+#include "../../Player.h"
 
 SoundPlayStrategy8L7L::SoundPlayStrategy8L7L(Player *player) : SoundPlayStrategy(player) {}
 

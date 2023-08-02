@@ -3,9 +3,9 @@
 //
 
 #include "SoundPlayStrategyFactory.h"
-#include "SoundPlayStrategy7L.h"
-#include "SoundPlayStrategy8L.h"
-#include "SoundPlayStrategy8L7L.h"
+#include "../strategy/SoundPlayStrategy7L.h"
+#include "../strategy/SoundPlayStrategy8L.h"
+#include "../strategy/SoundPlayStrategy8L7L.h"
 
 SoundPlayStrategy *SoundPlayStrategyFactory::createStrategy(int v, Player *player) {
     switch (v) {

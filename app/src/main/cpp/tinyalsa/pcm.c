@@ -47,7 +47,7 @@
 #include <sound/asound.h>
 
 #include "asoundlib.h"
-#include "log4c.h"
+#include "../utils/log4c.h"
 #define PARAM_MAX SNDRV_PCM_HW_PARAM_LAST_INTERVAL
 
 /* Logs information into a string; follows snprintf() in that

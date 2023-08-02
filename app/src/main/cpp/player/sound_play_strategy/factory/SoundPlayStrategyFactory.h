@@ -8,7 +8,7 @@
 
 class Player;
 
-#include "SoundPlayStrategy.h"
+#include "../strategy/SoundPlayStrategy.h"
 
 class SoundPlayStrategyFactory {
 public:
