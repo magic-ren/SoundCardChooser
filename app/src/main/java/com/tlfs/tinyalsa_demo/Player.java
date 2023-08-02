@@ -31,7 +31,7 @@ public class Player {
         this.iJump = iJump;
     }
 
-    public native void startPlay();
+    public native void startPlay(int cardMode);
 
     public native void closePCM();
 

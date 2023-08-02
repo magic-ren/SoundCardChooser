@@ -58,7 +58,14 @@ public class MainActivity extends AppCompatActivity implements IJump {
                 .compose(rxPermissions.ensure(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE))
                 .subscribe(granted -> {
                     if (granted) {
-                        mPlayer.startPlay();
+                        int cardMode;
+                        String customPropertyValue = getCustomProperty("voice.mode");
+                        if (TextUtils.isEmpty(customPropertyValue)) {
+                            cardMode = -1;
+                        } else {
+                            cardMode = Integer.parseInt(customPropertyValue);
+                        }
+                        mPlayer.startPlay(cardMode);
                     } else {
                         Toast.makeText(MainActivity.this, "权限被拒绝，无法录制音频！", Toast.LENGTH_SHORT).show();
                     }

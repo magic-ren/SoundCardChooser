@@ -13,13 +13,7 @@ jint JNI_OnLoad(JavaVM *vm, void *args) {
     return JNI_VERSION_1_6;
 }
 
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_tlfs_tinyalsa_1demo_Player_startPlay(JNIEnv *env, jobject thiz) {
-    if (player) {
-        player->start();
-    }
-}
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_tlfs_tinyalsa_1demo_Player_closePCM(JNIEnv *env, jobject thiz) {
@@ -84,5 +78,13 @@ Java_com_tlfs_tinyalsa_1demo_Player_getStatus(JNIEnv *env, jobject thiz) {
         return player->status;
     } else {
         return STATUS_PLAYER_UNINIT;
+    }
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_tlfs_tinyalsa_1demo_Player_startPlay(JNIEnv *env, jobject thiz, jint card_mode) {
+    if (player) {
+        player->setPlayStrategy(card_mode);
+        player->start();
     }
 }

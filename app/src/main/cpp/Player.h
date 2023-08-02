@@ -26,6 +26,10 @@
 
 #include "JNICallbackHelper.h"
 
+
+#include "SoundPlayStrategyFactory.h"
+
+
 extern "C" {
 #include "asoundlib.h"
 };
@@ -59,9 +63,9 @@ struct wav_header {
 class Player {
 private:
     char *file_path = 0;
-    FILE *file = 0;
+
     pthread_t pid_play;
-    struct pcm *pcm_in = 0;
+
     struct pcm *pcm_out = 0;
     struct wav_header header;
 
@@ -76,27 +80,40 @@ private:
     unsigned int cap_time = 0;
     enum pcm_format format = PCM_FORMAT_S16_LE;
 
-    struct pcm_config config;
-    char *buffer = 0;
-    unsigned int size = 0;
+    SoundPlayStrategy *soundPlayStrategy = 0;
+    int lastMode = -1;
 
-    unsigned int bytes_read = 0;
+
+
+
+
+
 
     //**********************************合成代码*************************************//
-    char *buffer2 = 0;
-    char *buffer3 = 0;
-    struct pcm *pcm_in_2 = 0;
+
+
+
     //**********************************合成代码*************************************//
 
     struct mixer *mixer = 0;
 
-    JNICallbackHelper *jniCallbackHelper = 0;
-
-    pthread_mutex_t mutex;
-    pthread_cond_t cond;
 
 public:
     int status = STATUS_UNPLAY;
+    struct pcm *pcm_in = 0;
+    struct pcm_config config;
+    struct pcm *pcm_in_2 = 0;
+    unsigned int size = 0;
+    char *buffer = 0;
+    char *buffer2 = 0;
+    char *buffer3 = 0;
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+    JNICallbackHelper *jniCallbackHelper = 0;
+    unsigned int bytes_read = 0;
+    FILE *file = 0;
+
+public:
 
     Player(JNICallbackHelper *jniCallbackHelper);
 
@@ -117,6 +134,10 @@ public:
     void continuePlay();
 
     void reset();
+
+    void afterPlay(pcm *pcm_target);
+
+    void setPlayStrategy(int card_mode);
 
 };
 

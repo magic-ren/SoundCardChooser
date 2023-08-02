@@ -10,5 +10,7 @@
 #define STATUS_PAUSE 3
 #define STATUS_COMPLETE 4
 #define STATUS_PLAYER_UNINIT -1
+#define PLAY_SUCCESS 1
+#define PLAY_FAIL -1
 
 #endif //TINYALSA_DEMO_UTIL_H
