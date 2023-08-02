@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements IJump {
         Button btnPause = binding.pause;
         Button btnContinue = binding.continuePlay;
         Button btnReset = binding.reset;
+        Button btnStatus = binding.getStatus;
 
         RxView.clicks(btn)
                 .compose(rxPermissions.ensure(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE))
@@ -133,6 +134,24 @@ public class MainActivity extends AppCompatActivity implements IJump {
             @Override
             public void onClick(View v) {
                 mPlayer.reset();
+            }
+        });
+
+        btnStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int r = mPlayer.getStatus();
+                if (r == Player.STATUS_COMPLETE) {
+                    Toast.makeText(MainActivity.this, "STATUS_COMPLETE", Toast.LENGTH_SHORT).show();
+                } else if (r == Player.STATUS_PAUSE) {
+                    Toast.makeText(MainActivity.this, "STATUS_PAUSE", Toast.LENGTH_SHORT).show();
+                } else if (r == Player.STATUS_PLAYING) {
+                    Toast.makeText(MainActivity.this, "STATUS_PLAYING", Toast.LENGTH_SHORT).show();
+                } else if (r == Player.STATUS_UNPLAY) {
+                    Toast.makeText(MainActivity.this, "STATUS_UNPLAY", Toast.LENGTH_SHORT).show();
+                } else if (r == Player.STATUS_UNINIT) {
+                    Toast.makeText(MainActivity.this, "STATUS_UNINIT", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

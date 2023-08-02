@@ -77,3 +77,12 @@ Java_com_tlfs_tinyalsa_1demo_Player_reset(JNIEnv *env, jobject thiz) {
         player->reset();
     }
 }
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_tlfs_tinyalsa_1demo_Player_getStatus(JNIEnv *env, jobject thiz) {
+    if (player) {
+        return player->status;
+    } else {
+        return STATUS_PLAYER_UNINIT;
+    }
+}

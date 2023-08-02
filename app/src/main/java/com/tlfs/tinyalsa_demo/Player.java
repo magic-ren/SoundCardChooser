@@ -14,10 +14,11 @@ import android.util.Log;
  */
 public class Player {
     private static final String TAG = "Player";
-    private static final int STATUS_UNPLAY = 1;
-    private static final int STATUS_PLAYING = 2;
-    private static final int STATUS_PAUSE = 3;
-    private static final int STATUS_COMPLETE = 4;
+    public static final int STATUS_UNPLAY = 1;
+    public static final int STATUS_PLAYING = 2;
+    public static final int STATUS_PAUSE = 3;
+    public static final int STATUS_COMPLETE = 4;
+    public static final int STATUS_UNINIT = -1;
 
     private AudioTrack audioTrack;
     private IJump iJump;
@@ -47,6 +48,8 @@ public class Player {
     public native void continuePlay();
 
     public native void reset();
+
+    public native int getStatus();
 
     private void onAudioDataCallback(byte[] data, int size) {
 
