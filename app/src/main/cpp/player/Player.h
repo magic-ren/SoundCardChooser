@@ -83,18 +83,6 @@ private:
     SoundPlayStrategy *soundPlayStrategy = 0;
     int lastMode = -1;
 
-
-
-
-
-
-
-    //**********************************合成代码*************************************//
-
-
-
-    //**********************************合成代码*************************************//
-
     struct mixer *mixer = 0;
 
 
@@ -112,6 +100,12 @@ public:
     JNICallbackHelper *jniCallbackHelper = 0;
     unsigned int bytes_read = 0;
     FILE *file = 0;
+
+
+private:
+    void saveAndJump(pcm *pcm_target);
+
+    void resouceReset();
 
 public:
 

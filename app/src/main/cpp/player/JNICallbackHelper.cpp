@@ -11,6 +11,7 @@ JNICallbackHelper::JNICallbackHelper(JavaVM *vm, JNIEnv *env, jobject job) {
     this->jmd_callback = env->GetMethodID(jclass1, "onAudioDataCallback", "([BI)V");
     this->jmd_jump_callback = env->GetMethodID(jclass1, "onCompleteCallback",
                                                "(Ljava/lang/String;)V");
+    this->jmd_error = env->GetMethodID(jclass1, "onError", "(I)V");
 }
 
 JNICallbackHelper::~JNICallbackHelper() {
@@ -36,6 +37,17 @@ void JNICallbackHelper::onJumpCallback(char *path) {
         jstring javaPath = env_child->NewStringUTF(path);
         env_child->CallVoidMethod(job, jmd_jump_callback, javaPath);
         env_child->DeleteLocalRef(javaPath);
+        vm->DetachCurrentThread();
+    }
+}
+
+void JNICallbackHelper::onError(int thread_mode, int error_code) {
+    if (thread_mode == THREAD_MAIN) {
+        env_main->CallVoidMethod(job, jmd_error, error_code);
+    } else if (thread_mode == THREAD_CHILD) {
+        JNIEnv *env_child;
+        vm->AttachCurrentThread(&env_child, 0);
+        env_child->CallVoidMethod(job, jmd_error, error_code);
         vm->DetachCurrentThread();
     }
 }

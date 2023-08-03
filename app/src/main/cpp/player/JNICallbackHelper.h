@@ -8,6 +8,7 @@
 
 #include <jni.h>
 #include "../utils/log4c.h"
+#include "consts.h"
 
 
 class JNICallbackHelper {
@@ -17,6 +18,8 @@ private:
     jobject job;
     jmethodID jmd_callback;
     jmethodID jmd_jump_callback;
+    jmethodID jmd_error;
+
 public:
     JNICallbackHelper(JavaVM *vm, JNIEnv *env, jobject job);
 
@@ -25,6 +28,8 @@ public:
     void onCallback(char *data, int size);
 
     void onJumpCallback(char *path);
+
+    void onError(int thread_mode, int error_code);
 };
 
 

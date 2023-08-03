@@ -22,13 +22,15 @@ public class Player {
 
     private AudioTrack audioTrack;
     private IJump iJump;
+    private IErrorListener iErrorListener;
 
     static {
         System.loadLibrary("tinyalsa_demo");
     }
 
-    public Player(IJump iJump) {
+    public Player(IJump iJump, IErrorListener iErrorListener) {
         this.iJump = iJump;
+        this.iErrorListener = iErrorListener;
     }
 
     public native void startPlay(int cardMode);
@@ -57,7 +59,6 @@ public class Player {
             audioTrack = new AudioTrack(AudioManager.STREAM_VOICE_CALL, 44100, AudioFormat.CHANNEL_OUT_STEREO,
                     AudioFormat.ENCODING_PCM_16BIT, size, AudioTrack.MODE_STREAM);
         }
-        Log.e("RDD", "onAudioDataCallback: " + audioTrack.hashCode());
         audioTrack.play();
         audioTrack.write(data, 0, size);
     }
@@ -70,5 +71,67 @@ public class Player {
                 iJump.jumpActivity(path);
             }
         });
+    }
+
+    private static final int ERROR_OPEN_PCMC2D0C_FAIL = 1;
+    private static final int ERROR_INIT_PCMC2D0C_BUFFER_FAIL = 2;
+    private static final int ERROR_SAVE_AUDIO_FAIL = 3;
+    private static final int ERROR_READ_PCMC2D0C_FAIL = 4;
+    private static final int ERROR_OPEN_PCMC0D0C_FAIL = 5;
+    private static final int ERROR_INIT_PCMC0D0C_BUFFER_FAIL = 6;
+    private static final int ERROR_READ_PCMC0D0C_FAIL = 7;
+    private static final int ERROR_INIT_MERGE_BUFFER_FAIL = 8;
+    private static final int ERROR_READ_PCMC0D0C_PCMC2D0C_FAIL = 9;
+    private static final int ERROR_CREATE_FILE_FAIL = 10;
+    private static final int ERROR_CARD_STRATEGY_SETTING = 11;
+    private static final int ERROR_OPEN_MIXER_FAIL = 12;
+    private static final int ERROR_SET_PCMC0D0C_MIC_FAIL = 13;
+
+    private void onError(int errorCode) {
+        String msg = "";
+        switch (errorCode) {
+            case ERROR_OPEN_PCMC2D0C_FAIL:
+                msg = "打开7202声卡设备文件失败";
+                break;
+            case ERROR_INIT_PCMC2D0C_BUFFER_FAIL:
+                msg = "初始化7202声卡使用的缓冲失败";
+                break;
+            case ERROR_SAVE_AUDIO_FAIL:
+                msg = "边录边播时：向保存文件写入音频数据失败";
+                break;
+            case ERROR_READ_PCMC2D0C_FAIL:
+                msg = "7202声卡录制失败";
+                break;
+            case ERROR_OPEN_PCMC0D0C_FAIL:
+                msg = "打开817声卡设备文件失败";
+                break;
+            case ERROR_INIT_PCMC0D0C_BUFFER_FAIL:
+                msg = "初始化817声卡使用的缓冲失败";
+                break;
+            case ERROR_READ_PCMC0D0C_FAIL:
+                msg = "817声卡录制失败";
+                break;
+            case ERROR_INIT_MERGE_BUFFER_FAIL:
+                msg = "初始化合成使用的缓冲失败";
+                break;
+            case ERROR_READ_PCMC0D0C_PCMC2D0C_FAIL:
+                msg = "声卡合成录制失败";
+                break;
+            case ERROR_CREATE_FILE_FAIL:
+                msg = "创建录音文件失败";
+                break;
+            case ERROR_CARD_STRATEGY_SETTING:
+                msg = "播放策略设置错误";
+                break;
+            case ERROR_OPEN_MIXER_FAIL:
+                msg = "混音器打开失败";
+                break;
+            case ERROR_SET_PCMC0D0C_MIC_FAIL:
+                msg = "混音器设置失败";
+                break;
+        }
+        if (iErrorListener != null) {
+            iErrorListener.onError(msg);
+        }
     }
 }

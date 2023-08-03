@@ -7,40 +7,47 @@
 SoundPlayStrategy7L::SoundPlayStrategy7L(Player *player) : SoundPlayStrategy(player) {}
 
 int SoundPlayStrategy7L::playSound() {
-    LOGE("播放策略：7202左");
+    LOGI("播放策略：7202左\n");
     if (!playerPtr->pcm_in_2) {
         playerPtr->pcm_in_2 = pcm_open(2, 0, PCM_IN, &playerPtr->config);
         if (!playerPtr->pcm_in_2 || !pcm_is_ready(playerPtr->pcm_in_2)) {
             LOGE("Unable to open PCM device (%s)\n", pcm_get_error(playerPtr->pcm_in_2));
+            if (playerPtr->jniCallbackHelper) {
+                playerPtr->jniCallbackHelper->onError(THREAD_CHILD, ERROR_OPEN_PCMC2D0C_FAIL);
+            }
             return PLAY_FAIL;
         } else {
-            LOGE("pcmC0D2c打开啦");
+            LOGI("pcmC2D0c打开啦\n");
         }
     } else {
-        LOGE("pcmC0D2c之前已结打开啦");
+        LOGI("pcmC2D0c之前已结打开啦\n");
     }
-    LOGE("一个周期内有多少采样点：%u", pcm_get_buffer_size(playerPtr->pcm_in_2));
+    LOGD("一个周期内有多少采样点：%u\n", pcm_get_buffer_size(playerPtr->pcm_in_2));
 
     if (!playerPtr->size) {
         playerPtr->size = pcm_frames_to_bytes(playerPtr->pcm_in_2, pcm_get_buffer_size(
                 playerPtr->pcm_in_2));
     }
-    LOGE("一个周期内占用多少字节：%u", playerPtr->size);
+    LOGD("一个周期内占用多少字节：%u\n", playerPtr->size);
 
     if (!playerPtr->buffer2) {
         playerPtr->buffer2 = static_cast<char *>(malloc(playerPtr->size));
         if (!playerPtr->buffer2) {
-            LOGE("buffer2:Unable to allocate %u bytes\n", playerPtr->size);
+            LOGE("pcmC2D0c的buffer:Unable to allocate %u bytes\n", playerPtr->size);
             free(playerPtr->buffer2);
+            if (playerPtr->jniCallbackHelper) {
+                playerPtr->jniCallbackHelper->onError(THREAD_CHILD,
+                                                      ERROR_INIT_PCMC2D0C_BUFFER_FAIL);
+            }
             return PLAY_FAIL;
         } else {
-            LOGE("buffer2初始化啦");
+            LOGI("pcmC2D0c的buffer初始化啦\n");
         }
     } else {
-        LOGE("buffer2之前已结初始化啦");
+        LOGI("pcmC2D0c的buffer之前已结初始化啦\n");
     }
 
-    LOGE("Capturing sample: %u ch, %u hz, %u bit\n", 2, 44100,
+    LOGI("Capturing sample: %u ch, %u hz, %u bit\n", 2, 44100,
          pcm_format_to_bits(PCM_FORMAT_S16_LE));
 
     playerPtr->status = STATUS_PLAYING;
@@ -59,7 +66,7 @@ int SoundPlayStrategy7L::playSound() {
         for (int i = 0; i < playerPtr->size; ++i) {
             output2 += std::to_string(static_cast<unsigned char>(*(playerPtr->buffer2 + i))) + " ";
         }
-        LOGE("7202取左声道前：%s", output2.c_str());
+        LOGD("7202取左声道前：%s\n", output2.c_str());
 
 
         //3,4复制1，2。
@@ -79,7 +86,7 @@ int SoundPlayStrategy7L::playSound() {
         if (playerPtr->jniCallbackHelper) {
             playerPtr->jniCallbackHelper->onCallback(playerPtr->buffer2, playerPtr->size);
         } else {
-            LOGE("未初始化播放回调");
+            LOGE("未初始化播放回调\n");
             return PLAY_FAIL;
         }
 
@@ -87,18 +94,27 @@ int SoundPlayStrategy7L::playSound() {
         for (int i = 0; i < playerPtr->size; ++i) {
             output += std::to_string(static_cast<unsigned char>(*(playerPtr->buffer2 + i))) + " ";
         }
-        LOGE("7202取左声道后：%s", output.c_str());
+        LOGD("7202取左声道后：%s\n", output.c_str());
 
 
         if (fwrite(playerPtr->buffer2, 1, playerPtr->size, playerPtr->file) != playerPtr->size) {
-            LOGE("保存音频失败\n");
+            LOGE("边录边播时：向保存文件写入音频数据失败\n");
+            if (playerPtr->jniCallbackHelper) {
+                playerPtr->jniCallbackHelper->onError(THREAD_CHILD, ERROR_SAVE_AUDIO_FAIL);
+            }
             return PLAY_FAIL;
         }
         playerPtr->bytes_read += playerPtr->size;
 
     }
 
-    LOGE("播放结束后的状态%d", playerPtr->status);
+    if (playerPtr->status != STATUS_UNPLAY || playerPtr->status != STATUS_COMPLETE) {
+        LOGE("播放过程中：pcmC2D0c数据读取错误\n");
+        if (playerPtr->jniCallbackHelper) {
+            playerPtr->jniCallbackHelper->onError(THREAD_CHILD, ERROR_READ_PCMC2D0C_FAIL);
+        }
+        return PLAY_FAIL;
+    }
 
     playerPtr->afterPlay(playerPtr->pcm_in_2);
 

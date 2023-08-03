@@ -21,7 +21,7 @@ import com.tlfs.tinyalsa_demo.databinding.ActivityMainBinding;
 
 import java.lang.reflect.Method;
 
-public class MainActivity extends AppCompatActivity implements IJump {
+public class MainActivity extends AppCompatActivity implements IJump, IErrorListener {
 
     private static final String TAG = "MainActivity";
 
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements IJump {
 
         final RxPermissions rxPermissions = new RxPermissions(this);
 
-        mPlayer = new Player(MainActivity.this);
+        mPlayer = new Player(this, this);
 
         Button btn = binding.sampleText;
         Button btnProp = binding.prop;
@@ -186,5 +186,10 @@ public class MainActivity extends AppCompatActivity implements IJump {
         Intent intent = new Intent(MainActivity.this, TargetActivity.class);
         intent.putExtra("path", path);
         startActivity(intent);
+    }
+
+    @Override
+    public void onError(String msg) {
+        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
     }
 }
