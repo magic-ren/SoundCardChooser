@@ -318,6 +318,7 @@ void Player::afterPlay(pcm *pcm_target) {
         fseek(file, 0, SEEK_SET);
         fwrite(&header, sizeof(struct wav_header), 1, file);
         fclose(file);
+        bytes_read = 0;
         if (jniCallbackHelper) {
             jniCallbackHelper->onJumpCallback(file_path);
         }
@@ -326,6 +327,7 @@ void Player::afterPlay(pcm *pcm_target) {
         file = 0;
     }
     if (status == STATUS_UNPLAY) {
+        bytes_read = 0;
         fclose(file);
         remove(file_path);
         delete file_path;
