@@ -13,7 +13,7 @@ import java.util.Date;
  * @Date 2023/7/31
  * 工具类
  */
-public class Utils {
+class Utils {
 
     /**
      * 获取当前时间，格式“yyyyMMdd_HHmmss”
