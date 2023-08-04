@@ -119,7 +119,7 @@ public:
 
     void closePcm();
 
-    void setPath(const char *file_path);
+    int setPath(const char *file_path);
 
     void setMixArgs();
 

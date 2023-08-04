@@ -165,7 +165,7 @@ int SoundPlayStrategy8L7L::playSound() {
 
 
     }
-    if (playerPtr->status != STATUS_UNPLAY || playerPtr->status != STATUS_COMPLETE) {
+    if (playerPtr->status != STATUS_UNPLAY && playerPtr->status != STATUS_COMPLETE) {
         LOGE("播放过程中：pcmC0D0c、pcmC2D0c数据读取错误\n");
         if (playerPtr->jniCallbackHelper) {
             playerPtr->jniCallbackHelper->onError(THREAD_CHILD, ERROR_READ_PCMC0D0C_PCMC2D0C_FAIL);

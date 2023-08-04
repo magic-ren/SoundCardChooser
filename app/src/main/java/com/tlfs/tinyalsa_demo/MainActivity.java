@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity implements IJump, IErrorList
 
         final RxPermissions rxPermissions = new RxPermissions(this);
 
-        mPlayer = new Player(this, this);
+        mPlayer = new Player(this, "/mnt/sdcard/Documents/", this, this);
+        mPlayer.prepare();
 
         Button btn = binding.sampleText;
         Button btnProp = binding.prop;
@@ -58,14 +59,7 @@ public class MainActivity extends AppCompatActivity implements IJump, IErrorList
                 .compose(rxPermissions.ensure(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE))
                 .subscribe(granted -> {
                     if (granted) {
-                        int cardMode;
-                        String customPropertyValue = getCustomProperty("voice.mode");
-                        if (TextUtils.isEmpty(customPropertyValue)) {
-                            cardMode = -1;
-                        } else {
-                            cardMode = Integer.parseInt(customPropertyValue);
-                        }
-                        mPlayer.startPlay(cardMode);
+                        mPlayer.start();
                     } else {
                         Toast.makeText(MainActivity.this, "权限被拒绝，无法录制音频！", Toast.LENGTH_SHORT).show();
                     }
@@ -74,31 +68,19 @@ public class MainActivity extends AppCompatActivity implements IJump, IErrorList
         btnProp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String customPropertyValue = getCustomProperty("voice.mode");
-                if (!TextUtils.isEmpty(customPropertyValue)) {
-                    // 在这里处理获取到的自定义属性值
-                    Toast.makeText(MainActivity.this, "属性值: " + customPropertyValue, Toast.LENGTH_SHORT).show();
-//                    Log.e(TAG, "属性值: "+customPropertyValue);
-                } else {
-                    // 自定义属性不存在或无法获取其值
-                    Toast.makeText(MainActivity.this, "属性值: null", Toast.LENGTH_SHORT).show();
-//                    Log.e(TAG, "属性值: null");
-                }
+                Toast.makeText(MainActivity.this, Utils.getCustomProperty("voice.mode") + "", Toast.LENGTH_SHORT).show();
             }
         });
 
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPlayer.closePCM();
             }
         });
 
         btnSetPath.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String path = "/mnt/sdcard/Documents/Records/" + Utils.getCurrentTime() + ".wav";
-                mPlayer.setFilePath(path);
             }
         });
 
@@ -119,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements IJump, IErrorList
         btnSetMix.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPlayer.setMixArgs();
+//                mPlayer.setMixArgs();
             }
         });
 
@@ -133,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements IJump, IErrorList
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPlayer.continuePlay();
+                mPlayer.continuee();
             }
         });
 
@@ -161,17 +143,6 @@ public class MainActivity extends AppCompatActivity implements IJump, IErrorList
                 }
             }
         });
-    }
-
-    public String getCustomProperty(String key) {
-        try {
-            Class<?> systemPropertiesClass = Class.forName("android.os.SystemProperties");
-            Method getMethod = systemPropertiesClass.getMethod("get", String.class);
-            return (String) getMethod.invoke(null, key);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
 

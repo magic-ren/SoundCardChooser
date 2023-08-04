@@ -108,8 +108,8 @@ int SoundPlayStrategy8L::playSound() {
         playerPtr->bytes_read += playerPtr->size;
 
     }
-
-    if (playerPtr->status != STATUS_UNPLAY || playerPtr->status != STATUS_COMPLETE) {
+    LOGE("播放结束后状态：%d\n", playerPtr->status);
+    if (playerPtr->status != STATUS_UNPLAY && playerPtr->status != STATUS_COMPLETE) {
         LOGE("播放过程中：pcmC0D0c数据读取错误\n");
         if (playerPtr->jniCallbackHelper) {
             playerPtr->jniCallbackHelper->onError(THREAD_CHILD, ERROR_READ_PCMC0D0C_FAIL);

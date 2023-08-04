@@ -42,7 +42,7 @@ Player::~Player() {
     pthread_cond_destroy(&cond);
 }
 
-void Player::setPath(const char *file_path) {
+int Player::setPath(const char *file_path) {
     this->file_path = new char[strlen(file_path) + 1];
     strcpy(this->file_path, file_path);
     LOGI("file path is (%s)\n", file_path);
@@ -55,10 +55,12 @@ void Player::setPath(const char *file_path) {
         if (jniCallbackHelper) {
             jniCallbackHelper->onError(THREAD_MAIN, ERROR_CREATE_FILE_FAIL);
         }
+        return FILE_OPEN_FAIL;
     } else {
         LOGI("open file success '%s'\n", file_path);
         /* leave enough room for header */
         fseek(file, sizeof(struct wav_header), SEEK_SET);
+        return FILE_OPEN_SUCCESS;
     }
 }
 

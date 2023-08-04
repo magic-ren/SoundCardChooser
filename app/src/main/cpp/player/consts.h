@@ -22,6 +22,12 @@
 #define PLAY_FAIL -1
 
 /**
+ * 音频保存文件打开是否成功
+ * **/
+#define FILE_OPEN_SUCCESS 1
+#define FILE_OPEN_FAIL -1
+
+/**
  * 播放器的错误码
  * **/
 #define ERROR_OPEN_PCMC2D0C_FAIL 1
