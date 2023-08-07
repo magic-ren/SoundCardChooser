@@ -10,5 +10,8 @@ public:
 
     ~SoundPlayStrategy7L();
 
+    /**
+     * 7202声卡左声道播放（环境音播放）；
+     * **/
     int playSound() override;
 };

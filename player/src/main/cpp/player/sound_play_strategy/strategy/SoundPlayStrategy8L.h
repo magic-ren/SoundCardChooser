@@ -9,5 +9,8 @@ public:
 
     ~SoundPlayStrategy8L();
 
+    /**
+     * 817声卡左声道播放（听诊音播放）；
+     * **/
     int playSound() override;
 };

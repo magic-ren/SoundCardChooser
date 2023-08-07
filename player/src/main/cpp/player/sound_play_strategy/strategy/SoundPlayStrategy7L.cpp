@@ -2,7 +2,7 @@
 // Created by Administrator on 2023/8/2.
 //
 #include "SoundPlayStrategy7L.h"
-#include "../../Player.h"
+#include "../../Player.h" //在.cpp中引用，而不是在.h中引用，这样就可以打破循环引用的问题
 
 SoundPlayStrategy7L::SoundPlayStrategy7L(Player *player) : SoundPlayStrategy(player) {}
 
@@ -54,11 +54,14 @@ int SoundPlayStrategy7L::playSound() {
 
     playerPtr->status = STATUS_PLAYING;
 
+    //只有当结束播放、重置、声卡文件读取数据出错时才会结束循环（结束播放）
     while (playerPtr->status != STATUS_COMPLETE && playerPtr->status != STATUS_UNPLAY &&
            !pcm_read(playerPtr->pcm_in_2, playerPtr->buffer2, playerPtr->size)) {
 
+        //锁的用法
         pthread_mutex_lock(&playerPtr->mutex);
         if (playerPtr->status == STATUS_PAUSE) {
+            //线程等待，直到有其他线程唤醒它
             pthread_cond_wait(&playerPtr->cond, &playerPtr->mutex);
         }
         pthread_mutex_unlock(&playerPtr->mutex);

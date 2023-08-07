@@ -12,6 +12,12 @@ class Player;
 
 class SoundPlayStrategyFactory {
 public:
+    /**
+     * 设计模式：静态简单工厂
+     *
+     * 策略工厂。
+     * 依据系统属性设置的声卡模式，创建相应的播放策略。
+     * **/
     static SoundPlayStrategy *createStrategy(int v, Player *player);
 };
 
