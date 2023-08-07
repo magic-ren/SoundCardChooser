@@ -7,5 +7,7 @@ class SoundPlayStrategy8L : public SoundPlayStrategy {
 public:
     SoundPlayStrategy8L(Player *player);
 
+    ~SoundPlayStrategy8L();
+
     int playSound() override;
 };

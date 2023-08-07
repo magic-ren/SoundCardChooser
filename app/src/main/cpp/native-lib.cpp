@@ -24,15 +24,6 @@ jint JNI_OnLoad(JavaVM *vm, void *args) {
     return JNI_VERSION_1_6;
 }
 
-
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_tlfs_tinyalsa_1demo_Player_closePCMN(JNIEnv *env, jobject thiz) {
-    if (player) {
-        player->closePcm();
-    }
-}
-
 extern "C"
 JNIEXPORT jint JNICALL
 Java_com_tlfs_tinyalsa_1demo_Player_setFilePathN(JNIEnv *env, jobject thiz, jstring path) {
@@ -41,6 +32,7 @@ Java_com_tlfs_tinyalsa_1demo_Player_setFilePathN(JNIEnv *env, jobject thiz, jstr
     if (player) {
         r = player->setPath(file_path);
     }
+    env->ReleaseStringUTFChars(path, file_path);
     return r;
 }
 
@@ -108,5 +100,14 @@ Java_com_tlfs_tinyalsa_1demo_Player_startN(JNIEnv *env, jobject thiz, jint card_
     if (player) {
         player->setPlayStrategy(card_mode);
         player->start();
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_tlfs_tinyalsa_1demo_Player_releaseN(JNIEnv *env, jobject thiz) {
+    if (player) {
+        delete player;
+        player = 0;
     }
 }

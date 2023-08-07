@@ -40,6 +40,50 @@ Player::Player(JNICallbackHelper *jniCallbackHelper) {
 Player::~Player() {
     pthread_mutex_destroy(&mutex);
     pthread_cond_destroy(&cond);
+    if (file_path) {
+        delete file_path;
+        file_path = 0;
+    }
+    if (soundPlayStrategy) {
+        delete soundPlayStrategy;
+        soundPlayStrategy = 0;
+    }
+    if (mixer) {
+        delete mixer;
+        mixer = 0;
+    }
+    if (pcm_out) {
+        delete pcm_out;
+        pcm_out = 0;
+    }
+    if (pcm_in) {
+        delete pcm_in;
+        pcm_in = 0;
+    }
+    if (pcm_in_2) {
+        delete pcm_in_2;
+        pcm_in_2 = 0;
+    }
+    if (buffer) {
+        delete buffer;
+        buffer = 0;
+    }
+    if (buffer2) {
+        delete buffer2;
+        buffer2 = 0;
+    }
+    if (buffer3) {
+        delete buffer3;
+        buffer3 = 0;
+    }
+    if (jniCallbackHelper) {
+        delete jniCallbackHelper;
+        jniCallbackHelper = 0;
+    }
+    if (file) {
+        delete file;
+        file = 0;
+    }
 }
 
 int Player::setPath(const char *file_path) {
@@ -125,12 +169,6 @@ void Player::resouceReset() {
     delete file_path;
     file_path = 0;
     file = 0;
-}
-
-void Player::closePcm() {
-    if (pcm_in) {
-        pcm_close(pcm_in);
-    }
 }
 
 void Player::setMixArgs() {

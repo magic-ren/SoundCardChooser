@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements IJump, IErrorList
 
     @Override
     protected void onDestroy() {
-
+        mPlayer.release();
         super.onDestroy();
     }
 

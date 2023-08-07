@@ -117,8 +117,6 @@ public:
 
     void start_();
 
-    void closePcm();
-
     int setPath(const char *file_path);
 
     void setMixArgs();

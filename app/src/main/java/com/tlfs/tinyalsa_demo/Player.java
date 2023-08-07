@@ -116,12 +116,12 @@ public class Player implements IPlayer {
 
     @Override
     public void release() {
-
+        releaseN();
     }
 
     private native void startN(int cardMode);
 
-    private native void closePCMN();
+    private native void releaseN();
 
     private native int setFilePathN(String path);
 

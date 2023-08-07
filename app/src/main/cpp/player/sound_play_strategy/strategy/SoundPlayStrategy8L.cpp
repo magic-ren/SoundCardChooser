@@ -7,6 +7,10 @@
 
 SoundPlayStrategy8L::SoundPlayStrategy8L(Player *player) : SoundPlayStrategy(player) {}
 
+SoundPlayStrategy8L::~SoundPlayStrategy8L() {
+    playerPtr = 0;
+}
+
 int SoundPlayStrategy8L::playSound() {
     LOGI("播放策略：817左\n");
     if (!playerPtr->pcm_in) {
