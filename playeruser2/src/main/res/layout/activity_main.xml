@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/sample_text"
+        android:id="@+id/start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="开始"
@@ -23,7 +23,7 @@
         android:text="测试属性"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sample_text" />
+        app:layout_constraintTop_toBottomOf="@+id/start" />
 
     <Button
         android:id="@+id/close"

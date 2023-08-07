@@ -13,7 +13,7 @@ import java.util.Date;
  * @Date 2023/7/31
  * 工具类
  */
-class Utils {
+public class Utils {
 
     /**
      * 获取当前时间，格式“yyyyMMdd_HHmmss”
@@ -41,7 +41,7 @@ class Utils {
         }
     }
 
-    protected static int getCustomProperty(String key) {
+    public static int getCustomProperty(String key) {
         int cardMode;
         String customPropertyValue = getCustomPropertyStr(key);
         if (TextUtils.isEmpty(customPropertyValue)) {

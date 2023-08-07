@@ -1,32 +1,24 @@
-package com.tlfs.tinyalsa_demo;
+package com.tlfs.playeruser2;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.content.Intent;
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioTrack;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jakewharton.rxbinding4.view.RxView;
 import com.tbruyelle.rxpermissions3.RxPermissions;
-import com.tlfs.tinyalsa_demo.databinding.ActivityMainBinding;
-
-import java.lang.reflect.Method;
+import com.tlfs.tinyalsa_demo.IErrorListener;
+import com.tlfs.tinyalsa_demo.IJump;
+import com.tlfs.tinyalsa_demo.Player;
+import com.tlfs.tinyalsa_demo.Utils;
 
 public class MainActivity extends AppCompatActivity implements IJump, IErrorListener {
 
     private static final String TAG = "MainActivity";
-
-
-    private ActivityMainBinding binding;
 
     Player mPlayer;
 
@@ -35,27 +27,27 @@ public class MainActivity extends AppCompatActivity implements IJump, IErrorList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(R.layout.activity_main);
 
         final RxPermissions rxPermissions = new RxPermissions(this);
 
-        mPlayer = new Player(this, "/mnt/sdcard/Documents/", this, this);
+        mPlayer = new Player.Builder()
+                .context(this)
+                .rootFilePath("/mnt/sdcard/Documents/")
+                .jumpCallback(this)
+                .errorMsgCallback(this)
+                .build();
         mPlayer.prepare();
 
-        Button btn = binding.sampleText;
-        Button btnProp = binding.prop;
-        Button btnClose = binding.close;
-        Button btnSetPath = binding.setPath;
-        Button btnPrepare = binding.prepare;
-        Button btnComplete = binding.complete;
-        Button btnSetMix = binding.setMix;
-        Button btnPause = binding.pause;
-        Button btnContinue = binding.continuePlay;
-        Button btnReset = binding.reset;
-        Button btnStatus = binding.getStatus;
+        Button btnProp = (Button) findViewById(R.id.prop);
+        Button btnStart = (Button) findViewById(R.id.start);
+        Button btnComplete = (Button) findViewById(R.id.complete);
+        Button btnPause = (Button) findViewById(R.id.pause);
+        Button btnContinue = (Button) findViewById(R.id.continue_play);
+        Button btnReset = (Button) findViewById(R.id.reset);
+        Button btnStatus = (Button) findViewById(R.id.get_status);
 
-        RxView.clicks(btn)
+        RxView.clicks(btnStart)
                 .compose(rxPermissions.ensure(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE))
                 .subscribe(granted -> {
                     if (granted) {
@@ -72,24 +64,6 @@ public class MainActivity extends AppCompatActivity implements IJump, IErrorList
             }
         });
 
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
-
-        btnSetPath.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
-
-        btnPrepare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPlayer.prepare();
-            }
-        });
 
         btnComplete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,12 +72,6 @@ public class MainActivity extends AppCompatActivity implements IJump, IErrorList
             }
         });
 
-        btnSetMix.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                mPlayer.setMixArgs();
-            }
-        });
 
         btnPause.setOnClickListener(new View.OnClickListener() {
             @Override

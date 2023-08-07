@@ -1,4 +1,4 @@
-package com.tlfs.tinyalsa_demo;
+package com.tlfs.playeruser2;
 
 import androidx.appcompat.app.AppCompatActivity;
 

@@ -34,11 +34,13 @@ public class Player implements IPlayer {
         System.loadLibrary("tinyalsa_demo");
     }
 
-    public Player(Context context, String rootFilePath, IJump iJump, IErrorListener iErrorListener) {
-        this.context = context;
-        this.rootFilePath = rootFilePath;
-        this.iJump = iJump;
-        this.iErrorListener = iErrorListener;
+    //    public Player(Context context, String rootFilePath, IJump iJump, IErrorListener iErrorListener) {
+//        this.context = context;
+//        this.rootFilePath = rootFilePath;
+//        this.iJump = iJump;
+//        this.iErrorListener = iErrorListener;
+//    }
+    private Player() {
     }
 
     @Override
@@ -240,5 +242,52 @@ public class Player implements IPlayer {
         }
     }
 
+    public static class Builder {
+        Player player;
+
+        public Builder() {
+            player = new Player();
+        }
+
+        /**
+         * 上下文
+         **/
+        public Builder context(Context context) {
+            player.context = context;
+            return Builder.this;
+        }
+
+        /**
+         * 保存录音的文件根路径，需要以/结尾。
+         * 例如："/mnt/sdcard/Documents/"
+         **/
+        public Builder rootFilePath(String path) {
+            player.rootFilePath = path;
+            return Builder.this;
+        }
+
+        /**
+         * 录音完成后的页面跳转回调
+         **/
+        public Builder jumpCallback(IJump jump) {
+            player.iJump = jump;
+            return Builder.this;
+        }
+
+        /**
+         * 录音模块报错的消息回调
+         **/
+        public Builder errorMsgCallback(IErrorListener errorListener) {
+            player.iErrorListener = errorListener;
+            return Builder.this;
+        }
+
+        /**
+         * 构建Builder实例
+         **/
+        public Player build() {
+            return player;
+        }
+    }
 
 }
