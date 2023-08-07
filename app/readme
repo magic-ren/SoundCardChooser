@@ -1,0 +1,44 @@
+使用文档：
+
+注意事项：
+1、不要忘记在页面结束时调用播放器的release()；
+2、播放之前不要忘记设置系统属性：
+1)只取817的左声道数据（只取听诊音）：
+adb shell setprop voice.mode 8
+2)只取7202的左声道数据（只取环境音）：
+adb shell setprop voice.mode 2
+3)取817的左声道和7202的左声道（同时取听诊音和环境音）：
+adb shell setprop voice.mode 10
+
+
+Player：
+1、新建Player实例：
+   例如：Player mPlayer = new Player.Builder()
+                .context(this)
+                .rootFilePath("/mnt/sdcard/Documents/")
+                .jumpCallback(this)
+                .errorMsgCallback(this)
+                .build();
+2、播放器方法：
+prepare()：初始化播放器
+start()：开始播放。
+说明：只有在“未播放状态”和“播放完成状态”下可以调用，否则提示错误，如下：
+      STATUS_PLAYING，提示错误“正在播放”；
+      STATUS_PAUSE，提示错误“播放暂停中，请使用“继续”功能”；
+      STATUS_UNINIT，提示错误“播放器未初始化”；
+pause()：暂停播放
+continuee()：继续播放
+reset()：重置播放器
+complete()：完成播放。
+说明：保存之前的音频，并跳转到指定页面。
+getStatus()：获取播放器的状态。
+说明：Player.STATUS_UNINIT：未初始化播放器
+      Player.STATUS_UNPLAY：未开始播放或者已重置
+      Player.STATUS_PLAYING：正在播放
+      Player.STATUS_PAUSE：已暂停
+      Player.STATUS_COMPLETE：已完成
+release()：释放播放器的资源
+
+IJump：完成录音后的跳转回调
+
+IErrorListener：播放器的错误回调
