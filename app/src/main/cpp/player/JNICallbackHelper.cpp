@@ -6,6 +6,7 @@
 JNICallbackHelper::JNICallbackHelper(JavaVM *vm, JNIEnv *env, jobject job) {
     this->vm = vm;
     this->env_main = env;
+    //获取全局引用，解决jobject不能跨线程的问题
     this->job = env->NewGlobalRef(job);
     jclass jclass1 = env->GetObjectClass(job);
     this->jmd_callback = env->GetMethodID(jclass1, "onAudioDataCallback", "([BI)V");
@@ -23,8 +24,11 @@ JNICallbackHelper::~JNICallbackHelper() {
 
 void JNICallbackHelper::onCallback(char *data, int size) {
     JNIEnv *env_child;
+    //用vm->AttachCurrentThread(&env_child, 0)获取子线程的JNIEnv
     if (vm->AttachCurrentThread(&env_child, 0) == JNI_OK) {
+        //用JNIEnv初始化jni的byte数组
         jbyteArray byteArray = env_child->NewByteArray(size);
+        //在C中byte数组就用char*来表示，这里将C的byte数组转为jni的byte数组
         env_child->SetByteArrayRegion(byteArray, 0, size, reinterpret_cast<jbyte *>(data));
         env_child->CallVoidMethod(job, jmd_callback, byteArray, size);
         vm->DetachCurrentThread();

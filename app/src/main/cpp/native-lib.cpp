@@ -5,9 +5,20 @@
 #include "utils/log4c.h"
 #include "player/JNICallbackHelper.h"
 
+//java有java的数据类型；C有C的数据类型；jni也有自己的数据类型；
+//在java调用C时，会先到jni层，此时java的数据都已经变为了jni相应的类型，此时用JNIEnv将它们转为C的数据类型，就可以传给C层代码了。
+//同样的，C层调用java时，也需要先将C的数据通过JNIEnv转为jni类型，然后通过JNIEnv调用java代码
+
 Player *player = 0;
 JavaVM *vm = 0;
 
+/**
+ * 在JNI_OnLoad方法中保存vm变量，因为vm可以跨线程；而JNIEnv不能跨线程，所以用vm在子线程初始化子线程的JNIEnv。
+ * 注：
+ * vm可以跨线程、跨函数；
+ * JNIEnv不能跨线程、可以跨函数；   解决：vm->AttachCurrentThread(&env_child, 0)
+ * jobject不可以跨线程、也不可以跨函数。  解决：this->job = env->NewGlobalRef(job);
+ * **/
 jint JNI_OnLoad(JavaVM *vm, void *args) {
     ::vm = vm;
     return JNI_VERSION_1_6;
