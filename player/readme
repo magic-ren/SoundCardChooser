@@ -1,8 +1,12 @@
 使用文档：
 
 注意事项：
-1、不要忘记在页面结束时调用播放器的release()；
-2、播放之前不要忘记设置系统属性：
+1、需要权限：
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+2、不要忘记在页面结束时调用播放器的release()；
+3、播放之前不要忘记设置系统属性：
 1)只取817的左声道数据（只取听诊音）：
 adb shell setprop voice.mode 8
 2)只取7202的左声道数据（只取环境音）：
