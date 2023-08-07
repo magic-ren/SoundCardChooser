@@ -26,7 +26,7 @@ jint JNI_OnLoad(JavaVM *vm, void *args) {
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_tlfs_tinyalsa_1demo_Player_setFilePathN(JNIEnv *env, jobject thiz, jstring path) {
+Java_com_rdd_player_Player_setFilePathN(JNIEnv *env, jobject thiz, jstring path) {
     const char *file_path = env->GetStringUTFChars(path, 0);
     int r = FILE_OPEN_FAIL;
     if (player) {
@@ -38,14 +38,14 @@ Java_com_tlfs_tinyalsa_1demo_Player_setFilePathN(JNIEnv *env, jobject thiz, jstr
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_tlfs_tinyalsa_1demo_Player_prepareN(JNIEnv *env, jobject thiz) {
+Java_com_rdd_player_Player_prepareN(JNIEnv *env, jobject thiz) {
     auto *helper = new JNICallbackHelper(vm, env, thiz);
     player = new Player(helper);
     player->setMixArgs();
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_tlfs_tinyalsa_1demo_Player_completeN(JNIEnv *env, jobject thiz) {
+Java_com_rdd_player_Player_completeN(JNIEnv *env, jobject thiz) {
     if (player) {
         if (player->status == STATUS_PAUSE) {
             player->continuePlay();
@@ -56,28 +56,28 @@ Java_com_tlfs_tinyalsa_1demo_Player_completeN(JNIEnv *env, jobject thiz) {
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_tlfs_tinyalsa_1demo_Player_setMixArgsN(JNIEnv *env, jobject thiz) {
+Java_com_rdd_player_Player_setMixArgsN(JNIEnv *env, jobject thiz) {
     if (player) {
         player->setMixArgs();
     }
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_tlfs_tinyalsa_1demo_Player_pauseN(JNIEnv *env, jobject thiz) {
+Java_com_rdd_player_Player_pauseN(JNIEnv *env, jobject thiz) {
     if (player) {
         player->pause();
     }
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_tlfs_tinyalsa_1demo_Player_continueeN(JNIEnv *env, jobject thiz) {
+Java_com_rdd_player_Player_continueeN(JNIEnv *env, jobject thiz) {
     if (player) {
         player->continuePlay();
     }
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_tlfs_tinyalsa_1demo_Player_resetN(JNIEnv *env, jobject thiz) {
+Java_com_rdd_player_Player_resetN(JNIEnv *env, jobject thiz) {
     if (player) {
         if (player->status == STATUS_PAUSE) {
             player->continuePlay();
@@ -87,7 +87,7 @@ Java_com_tlfs_tinyalsa_1demo_Player_resetN(JNIEnv *env, jobject thiz) {
 }
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_tlfs_tinyalsa_1demo_Player_getStatusN(JNIEnv *env, jobject thiz) {
+Java_com_rdd_player_Player_getStatusN(JNIEnv *env, jobject thiz) {
     if (player) {
         return player->status;
     } else {
@@ -96,7 +96,7 @@ Java_com_tlfs_tinyalsa_1demo_Player_getStatusN(JNIEnv *env, jobject thiz) {
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_tlfs_tinyalsa_1demo_Player_startN(JNIEnv *env, jobject thiz, jint card_mode) {
+Java_com_rdd_player_Player_startN(JNIEnv *env, jobject thiz, jint card_mode) {
     if (player) {
         player->setPlayStrategy(card_mode);
         player->start();
@@ -105,7 +105,7 @@ Java_com_tlfs_tinyalsa_1demo_Player_startN(JNIEnv *env, jobject thiz, jint card_
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_tlfs_tinyalsa_1demo_Player_releaseN(JNIEnv *env, jobject thiz) {
+Java_com_rdd_player_Player_releaseN(JNIEnv *env, jobject thiz) {
     if (player) {
         delete player;
         player = 0;

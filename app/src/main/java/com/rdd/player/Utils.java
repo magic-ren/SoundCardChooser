@@ -1,11 +1,9 @@
-package com.tlfs.tinyalsa_demo;
+package com.rdd.player;
 
 import android.text.TextUtils;
 
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**

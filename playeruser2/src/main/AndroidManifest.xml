@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tlfs.playeruser2">
+    package="com.rdd.playeruser2">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -14,10 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tinyalsa_demo">
         <activity
-            android:name=".TargetActivity"
+            android:name="com.rdd.playeruser2.TargetActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.rdd.playeruser2.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,4 +1,4 @@
-package com.tlfs.playeruser2;
+package com.rdd.playeruser2;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,10 +11,10 @@ import android.widget.Toast;
 
 import com.jakewharton.rxbinding4.view.RxView;
 import com.tbruyelle.rxpermissions3.RxPermissions;
-import com.tlfs.tinyalsa_demo.IErrorListener;
-import com.tlfs.tinyalsa_demo.IJump;
-import com.tlfs.tinyalsa_demo.Player;
-import com.tlfs.tinyalsa_demo.Utils;
+import com.rdd.player.IErrorListener;
+import com.rdd.player.IJump;
+import com.rdd.player.Player;
+import com.rdd.player.Utils;
 
 public class MainActivity extends AppCompatActivity implements IJump, IErrorListener {
 

@@ -1,14 +1,11 @@
-package com.tlfs.tinyalsa_demo;
+package com.rdd.player;
 
 import android.content.Context;
-import android.content.Intent;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 /**

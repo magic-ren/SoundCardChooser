@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "tinyalsa_demo"
-include ':app'
+include ':player'
 include ':playeruser2'
