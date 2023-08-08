@@ -6,7 +6,7 @@
 
 SoundPlayStrategy7L::SoundPlayStrategy7L(Player *player) : SoundPlayStrategy(player) {}
 
-SoundPlayStrategy7L::~SoundPlayStrategy7L() { playerPtr = 0; }
+SoundPlayStrategy7L::~SoundPlayStrategy7L() {}
 
 int SoundPlayStrategy7L::playSound() {
     LOGI("播放策略：7202左\n");

@@ -16,10 +16,14 @@ JNICallbackHelper::JNICallbackHelper(JavaVM *vm, JNIEnv *env, jobject job) {
 }
 
 JNICallbackHelper::~JNICallbackHelper() {
-    vm = 0;
-    env_main->DeleteGlobalRef(job);
-    job = 0;
-    env_main = 0;
+    if (finishByWorkThread) {
+        JNIEnv *env_child;
+        vm->AttachCurrentThread(&env_child, 0);
+        env_child->DeleteGlobalRef(job);
+        vm->DetachCurrentThread();
+    } else {
+        env_main->DeleteGlobalRef(job);
+    }
 }
 
 void JNICallbackHelper::onCallback(char *data, int size) {

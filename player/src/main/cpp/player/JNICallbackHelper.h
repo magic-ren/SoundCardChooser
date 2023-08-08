@@ -21,6 +21,9 @@ private:
     jmethodID jmd_error;
 
 public:
+    bool finishByWorkThread = false;//当由子线程执行Player的析构函数时，对调用到helper的析构函数，要用子线程的JNIEnv来释放全局引用jobject
+
+public:
     JNICallbackHelper(JavaVM *vm, JNIEnv *env, jobject job);
 
     ~JNICallbackHelper();

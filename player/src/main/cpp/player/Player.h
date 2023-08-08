@@ -100,6 +100,7 @@ public:
     JNICallbackHelper *jniCallbackHelper = 0;
     unsigned int bytes_read = 0;
     FILE *file = 0;
+    bool finishByWorkThread = false;//false是未结束，true是播放器已经结束了。播放过程中退出，子线程中依据此变量来释放Player，因为此时不能在主线程释放Player，不然会出错（子线程还在用Player）
 
 
 private:

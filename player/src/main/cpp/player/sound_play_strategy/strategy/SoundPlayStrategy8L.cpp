@@ -8,7 +8,6 @@
 SoundPlayStrategy8L::SoundPlayStrategy8L(Player *player) : SoundPlayStrategy(player) {}
 
 SoundPlayStrategy8L::~SoundPlayStrategy8L() {
-    playerPtr = 0;
 }
 
 int SoundPlayStrategy8L::playSound() {

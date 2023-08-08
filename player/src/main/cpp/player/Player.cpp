@@ -142,6 +142,10 @@ void Player::afterPlay(pcm *pcm_target) {
     if (status == STATUS_UNPLAY) {
         LOGI("已重置\n");
         resouceReset();
+        if (finishByWorkThread) {
+            jniCallbackHelper->finishByWorkThread = true;
+            delete this;
+        }
     }
 }
 

@@ -107,7 +107,16 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_rdd_player_Player_releaseN(JNIEnv *env, jobject thiz) {
     if (player) {
-        delete player;
-        player = 0;
+        if (player->status == STATUS_PLAYING) {
+            player->finishByWorkThread = true;
+            player->reset();
+        } else if (player->status == STATUS_PAUSE) {
+            player->finishByWorkThread = true;
+            player->continuePlay();
+            player->reset();
+        } else {
+            delete player;
+            player = 0;
+        }
     }
 }
