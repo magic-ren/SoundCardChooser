@@ -1,5 +1,5 @@
 //
-// Created by Administrator on 2023/7/31.
+// Created by rendedong on 2023/7/31.
 //
 
 #ifndef TINYALSA_DEMO_JNICALLBACKHELPER_H
@@ -28,10 +28,19 @@ public:
 
     ~JNICallbackHelper();
 
+    /**
+     * C层到Java层的播放回调（C层获取录音数据，Java层播放）（通过JNI完成）
+     * **/
     void onCallback(char *data, int size);
 
+    /**
+     * 完成播放时回调java层代码
+     * **/
     void onJumpCallback(char *path);
 
+    /**
+     * 播放器内部发生错误时通知java层
+     * **/
     void onError(int thread_mode, int error_code);
 };
 

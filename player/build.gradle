@@ -11,7 +11,15 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+//        externalNativeBuild {
+//            cmake {
+//                cppFlags ''
+//                abiFilters "armeabi-v7a"//将源码编译到哪些平台
+//            }
+//        }
+//        ndk{
+//            abiFilters("armeabi-v7a")//打包哪些平台进apk
+//        }
         externalNativeBuild {
             cmake {
                 cppFlags ''
@@ -31,7 +39,7 @@ android {
     }
     externalNativeBuild {
         cmake {
-            path file('src/main/cpp/CMakeLists.txt')
+            path file('src/main/cpp/CMakeLists.txt')//cmake文件路径和版本
             version '3.18.1'
         }
     }

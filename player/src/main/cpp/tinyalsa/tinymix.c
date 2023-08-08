@@ -1,3 +1,8 @@
+
+/**
+ * 对mixer.c的使用示例代码，我拷贝过来，使用了其中的tinymix_set_value方法
+ * **/
+
 /* tinymix.c
 **
 ** Copyright 2011, The Android Open Source Project
@@ -53,7 +58,7 @@ struct option tinymix_long_options[] = {
         {"tabs-only",  no_argument,       0, 't'},
         {"value-only", no_argument,       0, 'v'},
         {"help",       no_argument,       0, 'h'},
-        {0,            0,                 0, 0}
+        {0, 0,                            0, 0}
 };
 
 int g_tabs_only = 0;

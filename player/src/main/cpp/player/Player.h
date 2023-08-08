@@ -1,5 +1,5 @@
 //
-// Created by Administrator on 2023/6/8.
+// Created by rendedong on 2023/6/8.
 //
 
 #ifndef TINYALSA_DEMO_PLAYER_H
@@ -31,12 +31,15 @@
 
 
 extern "C" {
-#include "../tinyalsa/asoundlib.h"
+#include "../tinyalsa/asoundlib.h" //这个头文件里声明的都是C文件里的方法，在C++中调用C，需要加上extern "C"
 };
 
+//想引用tinymix.c文件中的方法，需要先像这样声明一下（否则调用不了），会自动帮你找到实现方法
 extern "C" int tinymix_set_value(struct mixer *mixer, const char *control,
                                  char **values, unsigned int num_values);
 
+
+//wav头信息相关参数
 #define ID_RIFF 0x46464952
 #define ID_WAVE 0x45564157
 #define ID_FMT  0x20746d66
@@ -62,13 +65,14 @@ struct wav_header {
 
 class Player {
 private:
-    char *file_path = 0;
+    char *file_path = 0;//所有的指针类型初始化时最好都指定为0，不然默认会指向一个随机地址，也就是野指针
 
     pthread_t pid_play;
 
     struct pcm *pcm_out = 0;
     struct wav_header header;
 
+    //这些参数都是从tinyalsa库的示例代码里copy过来的
     unsigned int card = 0;
     unsigned int device = 0;
     unsigned int channels = 2;
@@ -104,8 +108,14 @@ public:
 
 
 private:
+    /**
+     * 播放完成后保存录音并跳转页面
+     * **/
     void saveAndJump(pcm *pcm_target);
 
+    /**
+     * 播放重置时重置相关资源
+     * **/
     void resouceReset();
 
 public:
@@ -114,22 +124,52 @@ public:
 
     ~Player();
 
+    /**
+     * 开始播放（主线程中调用）
+     * **/
     void start();
 
+    /**
+     * 开始播放（子线程中调用）
+     * **/
     void start_();
 
+    /**
+     * 设置保存录音文件的路径
+     * **/
     int setPath(const char *file_path);
 
+    /**
+     * 设置817声卡录制通道的mic为主mic（默认是关闭的）
+     * **/
     void setMixArgs();
 
+    /**
+     * 暂停播放
+     * **/
     void pause();
 
+    /**
+     * 继续播放
+     * **/
     void continuePlay();
 
+    /**
+     * 重置播放
+     * **/
     void reset();
 
+    /**
+     * 播放完毕后进行的处理（子线程调用）。例如保存录音、跳转页面、重置资源。
+     * **/
     void afterPlay(pcm *pcm_target);
 
+    /**
+     * 设置播放器的播放策略。目前有三种：
+     * 1、7202声卡左声道播放（环境音播放）；
+     * 2、817声卡左声道播放（听诊音播放）；
+     * 3、817左声道和7202左声道合成播放——7202左声道复制到817的右声道（听诊音、环境音同时播放）。
+     * **/
     void setPlayStrategy(int card_mode);
 
 };

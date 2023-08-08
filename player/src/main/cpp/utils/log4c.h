@@ -2,7 +2,7 @@
 #ifndef LOG4C_H
 #define LOG4C_H
 
-#include <android/log.h>
+#include <android/log.h>//ndk里的
 
 #define TAG "RDD"
 

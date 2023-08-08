@@ -1,5 +1,5 @@
 //
-// Created by Administrator on 2023/8/2.
+// Created by rendedong on 2023/8/2.
 //
 
 #include "SoundPlayStrategy8L7L.h"
@@ -13,6 +13,7 @@ SoundPlayStrategy8L7L::~SoundPlayStrategy8L7L() {
 int SoundPlayStrategy8L7L::playSound() {
     LOGI("播放策略：817左+7202左\n");
     if (!playerPtr->pcm_in) {
+        //打开声卡
         playerPtr->pcm_in = pcm_open(0, 0, PCM_IN, &playerPtr->config);
         if (!playerPtr->pcm_in || !pcm_is_ready(playerPtr->pcm_in)) {
             LOGE("Unable to open PCM device (%s)\n", pcm_get_error(playerPtr->pcm_in));
@@ -28,6 +29,7 @@ int SoundPlayStrategy8L7L::playSound() {
     }
 
     if (!playerPtr->pcm_in_2) {
+        //打开声卡
         playerPtr->pcm_in_2 = pcm_open(2, 0, PCM_IN, &playerPtr->config);
         if (!playerPtr->pcm_in_2 || !pcm_is_ready(playerPtr->pcm_in_2)) {
             LOGE("Unable to open PCM device (%s)\n", pcm_get_error(playerPtr->pcm_in_2));
@@ -48,12 +50,14 @@ int SoundPlayStrategy8L7L::playSound() {
     //pcm_get_buffer_size()是获取一个周期内有多少采样点；
     //817和7202的size是一样的，所以这里写一个就行了
     if (!playerPtr->size) {
+        //获取buffer的大小
         playerPtr->size = pcm_frames_to_bytes(playerPtr->pcm_in, pcm_get_buffer_size(
                 playerPtr->pcm_in));
     }
     LOGD("一个周期内占用多少字节：%u\n", playerPtr->size);
 
 
+    //初始化buffer
     if (!playerPtr->buffer) {
         playerPtr->buffer = static_cast<char *>(malloc(playerPtr->size));
         if (!playerPtr->buffer) {
@@ -69,6 +73,7 @@ int SoundPlayStrategy8L7L::playSound() {
     } else {
         LOGI("pcmC0D0c的buffer之前已结初始化啦\n");
     }
+    //初始化buffer
     if (!playerPtr->buffer2) {
         playerPtr->buffer2 = static_cast<char *>(malloc(playerPtr->size));
         if (!playerPtr->buffer2) {
@@ -84,6 +89,7 @@ int SoundPlayStrategy8L7L::playSound() {
     } else {
         LOGI("pcmC2D0c的buffer之前已结初始化啦\n");
     }
+    //初始化buffer
     if (!playerPtr->buffer3) {
         playerPtr->buffer3 = static_cast<char *>(malloc(playerPtr->size));
         if (!playerPtr->buffer3) {
@@ -104,16 +110,21 @@ int SoundPlayStrategy8L7L::playSound() {
 
     playerPtr->status = STATUS_PLAYING;
 
+    //开始播放
+    //只有当结束播放、重置、声卡文件读取数据出错时才会结束循环（结束播放）
     while (playerPtr->status != STATUS_COMPLETE && playerPtr->status != STATUS_UNPLAY &&
            !pcm_read(playerPtr->pcm_in, playerPtr->buffer, playerPtr->size) &&
            !pcm_read(playerPtr->pcm_in_2, playerPtr->buffer2, playerPtr->size)) {
 
+        //锁的用法
         pthread_mutex_lock(&playerPtr->mutex);
         if (playerPtr->status == STATUS_PAUSE) {
+            //线程等待，直到有其他线程唤醒它
             pthread_cond_wait(&playerPtr->cond, &playerPtr->mutex);
         }
         pthread_mutex_unlock(&playerPtr->mutex);
 
+        //打印字符数组
         std::string output1;
         for (int i = 0; i < playerPtr->size; ++i) {
             output1 += std::to_string(static_cast<unsigned char>(*(playerPtr->buffer + i))) + " ";
@@ -142,6 +153,7 @@ int SoundPlayStrategy8L7L::playSound() {
         }
 
         if (playerPtr->jniCallbackHelper) {
+            //将录音buffer传给给java层播放
             playerPtr->jniCallbackHelper->onCallback(playerPtr->buffer3, playerPtr->size);
         } else {
             LOGE("未初始化播放回调\n");
@@ -154,6 +166,7 @@ int SoundPlayStrategy8L7L::playSound() {
         }
         LOGD("合成后：%s\n", output.c_str());
 
+        //保存录音buffer到文件
         if (fwrite(playerPtr->buffer3, 1, playerPtr->size, playerPtr->file) != playerPtr->size) {
             LOGE("边录边播时：向保存文件写入音频数据失败\n");
             if (playerPtr->jniCallbackHelper) {
@@ -165,6 +178,8 @@ int SoundPlayStrategy8L7L::playSound() {
 
 
     }
+
+    //只有当结束后状态是STATUS_UNPLAY（重置）或STATUS_COMPLETE（完成）时，才是正常结束，否则就是播放的过程中出问题了
     if (playerPtr->status != STATUS_UNPLAY && playerPtr->status != STATUS_COMPLETE) {
         LOGE("播放过程中：pcmC0D0c、pcmC2D0c数据读取错误\n");
         if (playerPtr->jniCallbackHelper) {
@@ -173,6 +188,7 @@ int SoundPlayStrategy8L7L::playSound() {
         return PLAY_FAIL;
     }
 
+    //正常结束后，如果是重置，那么就重置资源；如果是完成，那么就保存录音文件（写入wav头信息），并跳转页面
     playerPtr->afterPlay(playerPtr->pcm_in);
 
     return PLAY_SUCCESS;

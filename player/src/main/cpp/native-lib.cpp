@@ -27,19 +27,19 @@ jint JNI_OnLoad(JavaVM *vm, void *args) {
 extern "C"
 JNIEXPORT jint JNICALL
 Java_com_rdd_player_Player_setFilePathN(JNIEnv *env, jobject thiz, jstring path) {
-    const char *file_path = env->GetStringUTFChars(path, 0);
+    const char *file_path = env->GetStringUTFChars(path, 0);//从jni的String类型拿到C++的String类型
     int r = FILE_OPEN_FAIL;
     if (player) {
         r = player->setPath(file_path);
     }
-    env->ReleaseStringUTFChars(path, file_path);
+    env->ReleaseStringUTFChars(path, file_path);//从jni的String类型拿到C++的String类型，使用完要释放
     return r;
 }
 
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_rdd_player_Player_prepareN(JNIEnv *env, jobject thiz) {
-    auto *helper = new JNICallbackHelper(vm, env, thiz);
+    auto *helper = new JNICallbackHelper(vm, env, thiz);//auto关键字可以自动推断类型，不用自己写了
     player = new Player(helper);
     LOGI(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>播放器已经初始化\n");
     player->setMixArgs();
@@ -108,13 +108,16 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_rdd_player_Player_releaseN(JNIEnv *env, jobject thiz) {
     if (player) {
+        //当正在播放时不能直接释放player，因为播放线程还在用它。通过reset将播放线程停止，子线程中会依据finishByWorkThread标识在结束前释放player
         if (player->status == STATUS_PLAYING) {
             player->finishByWorkThread = true;
             player->reset();
+            //比上面多了一步操作，要先唤醒线程
         } else if (player->status == STATUS_PAUSE) {
             player->finishByWorkThread = true;
             player->continuePlay();
             player->reset();
+            //如果子线程没有在运行，那么直接释放player就可以了
         } else {
             delete player;
             player = 0;

@@ -1,5 +1,5 @@
 //
-// Created by Administrator on 2023/8/2.
+// Created by rendedong on 2023/8/2.
 //
 
 #ifndef TINYALSA_DEMO_SOUNDPLAYSTRATEGYFACTORY_H

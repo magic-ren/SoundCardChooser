@@ -1,5 +1,7 @@
 使用文档：
 
+打包为aar文件：./gradlew :player:assemble
+
 注意事项：
 1、minSdk 24；targetSdk 26；compileSdk 31
 2、需要权限：

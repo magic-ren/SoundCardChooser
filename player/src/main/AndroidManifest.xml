@@ -2,6 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.rdd.player">
-
+    <!-- 'com.android.library'里不需要声明权限，也不需要application标签 -->
 
 </manifest>
