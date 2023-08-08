@@ -41,6 +41,7 @@ JNIEXPORT void JNICALL
 Java_com_rdd_player_Player_prepareN(JNIEnv *env, jobject thiz) {
     auto *helper = new JNICallbackHelper(vm, env, thiz);
     player = new Player(helper);
+    LOGI(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>播放器已经初始化\n");
     player->setMixArgs();
 }
 extern "C"
@@ -117,6 +118,7 @@ Java_com_rdd_player_Player_releaseN(JNIEnv *env, jobject thiz) {
         } else {
             delete player;
             player = 0;
+            LOGI(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>播放器已经释放\n");
         }
     }
 }

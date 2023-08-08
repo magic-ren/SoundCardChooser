@@ -136,15 +136,16 @@ void Player::start_() {
 
 void Player::afterPlay(pcm *pcm_target) {
     if (status == STATUS_COMPLETE) {
-        LOGI("已完成\n");
+        LOGI(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>已完成\n");
         saveAndJump(pcm_target);
     }
     if (status == STATUS_UNPLAY) {
-        LOGI("已重置\n");
+        LOGI(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>已重置\n");
         resouceReset();
         if (finishByWorkThread) {
             jniCallbackHelper->finishByWorkThread = true;
             delete this;
+            LOGI(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>播放器已经释放\n");
         }
     }
 }
