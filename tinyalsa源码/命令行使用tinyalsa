@@ -1,0 +1,13 @@
+其实在adb shell进入后，也可以在命令行使用tinyalsa：
+
+
+ls /dev/snd/
+controlC0 controlC1 controlC2 pcmC0D0c pcmC0D0p pcmC1DOp pcmC2DOc timer
+
+tinycap /sdcard/aa.wav -D 2 -d 0     用2号声卡的0号设备录制声音，也就是使用pcmC2DOc,保存至/sdcard/aa.wav
+tinyplay /sdcard/aa.wav -D 0 -d 0    用0号声卡的0号设备播放声音，也就是使用pcmC0D0p
+tinymix -D 0  查看0号声卡的情况，也就是controlC0
+tinymix -D 0 0 2  将0号声卡的0控制器设置为2类型，使用的也是controlC0文件
+lsof /dev/snd/* 查看声卡占用情况。因为声卡是整个系统共享的，一个进程打开，其他进程就无法使用了。系统上层会统一对这个资源进行管理，但是如果我们自己在底层操控，就要非常小心。
+
+tinyalsa的库源码也放入了项目中
