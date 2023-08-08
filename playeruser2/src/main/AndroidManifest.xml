@@ -14,16 +14,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tinyalsa_demo">
         <activity
-            android:name="com.rdd.playeruser2.TargetActivity"
-            android:exported="false" />
-        <activity
-            android:name="com.rdd.playeruser2.MainActivity"
+            android:name=".PreActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".TargetActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+
         </activity>
     </application>
 

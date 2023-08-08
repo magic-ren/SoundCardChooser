@@ -39,7 +39,6 @@ int SoundPlayStrategy8L::playSound() {
         playerPtr->buffer = static_cast<char *>(malloc(playerPtr->size));
         if (!playerPtr->buffer) {
             LOGE("pcmC0D0c的buffer:Unable to allocate %u bytes\n", playerPtr->size);
-            free(playerPtr->buffer);
             if (playerPtr->jniCallbackHelper) {
                 playerPtr->jniCallbackHelper->onError(THREAD_CHILD,
                                                       ERROR_INIT_PCMC0D0C_BUFFER_FAIL);

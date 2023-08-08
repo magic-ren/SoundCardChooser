@@ -59,7 +59,6 @@ int SoundPlayStrategy8L7L::playSound() {
         playerPtr->buffer = static_cast<char *>(malloc(playerPtr->size));
         if (!playerPtr->buffer) {
             LOGE("pcmC0D0c的buffer:Unable to allocate %u bytes\n", playerPtr->size);
-            free(playerPtr->buffer);
             if (playerPtr->jniCallbackHelper) {
                 playerPtr->jniCallbackHelper->onError(THREAD_CHILD,
                                                       ERROR_INIT_PCMC0D0C_BUFFER_FAIL);
@@ -75,7 +74,6 @@ int SoundPlayStrategy8L7L::playSound() {
         playerPtr->buffer2 = static_cast<char *>(malloc(playerPtr->size));
         if (!playerPtr->buffer2) {
             LOGE("pcmC2D0c的buffer:Unable to allocate %u bytes\n", playerPtr->size);
-            free(playerPtr->buffer2);
             if (playerPtr->jniCallbackHelper) {
                 playerPtr->jniCallbackHelper->onError(THREAD_CHILD,
                                                       ERROR_INIT_PCMC2D0C_BUFFER_FAIL);
@@ -91,7 +89,6 @@ int SoundPlayStrategy8L7L::playSound() {
         playerPtr->buffer3 = static_cast<char *>(malloc(playerPtr->size));
         if (!playerPtr->buffer3) {
             LOGE("合成的buffer:Unable to allocate %u bytes\n", playerPtr->size);
-            free(playerPtr->buffer3);
             if (playerPtr->jniCallbackHelper) {
                 playerPtr->jniCallbackHelper->onError(THREAD_CHILD, ERROR_INIT_MERGE_BUFFER_FAIL);
             }

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -16,6 +17,8 @@ import com.rdd.player.IJump;
 import com.rdd.player.Player;
 import com.rdd.player.Utils;
 
+import javax.security.auth.login.LoginException;
+
 public class MainActivity extends AppCompatActivity implements IJump, IErrorListener {
 
     private static final String TAG = "MainActivity";
@@ -26,9 +29,7 @@ public class MainActivity extends AppCompatActivity implements IJump, IErrorList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
-
         final RxPermissions rxPermissions = new RxPermissions(this);
 
         mPlayer = new Player.Builder()
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements IJump, IErrorList
                 .errorMsgCallback(this)
                 .build();
         mPlayer.prepare();
-
+        Log.e(TAG, "c");
         Button btnProp = (Button) findViewById(R.id.prop);
         Button btnStart = (Button) findViewById(R.id.start);
         Button btnComplete = (Button) findViewById(R.id.complete);
@@ -116,8 +117,8 @@ public class MainActivity extends AppCompatActivity implements IJump, IErrorList
 
     @Override
     protected void onDestroy() {
-        mPlayer.release();
         super.onDestroy();
+        mPlayer.release();
     }
 
     @Override

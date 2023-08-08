@@ -41,48 +41,48 @@ Player::~Player() {
     pthread_mutex_destroy(&mutex);
     pthread_cond_destroy(&cond);
     if (file_path) {
-        delete file_path;
-        file_path = 0;
+        delete[] file_path;
+        file_path = nullptr;
     }
     if (soundPlayStrategy) {
         delete soundPlayStrategy;
-        soundPlayStrategy = 0;
+        soundPlayStrategy = nullptr;
     }
     if (mixer) {
-        delete mixer;
-        mixer = 0;
+        mixer_close(mixer);
+        mixer = nullptr;
     }
     if (pcm_out) {
-        delete pcm_out;
-        pcm_out = 0;
+        pcm_close(pcm_out);
+        pcm_out = nullptr;
     }
     if (pcm_in) {
-        delete pcm_in;
-        pcm_in = 0;
+        pcm_close(pcm_in);
+        pcm_in = nullptr;
     }
     if (pcm_in_2) {
-        delete pcm_in_2;
-        pcm_in_2 = 0;
+        pcm_close(pcm_in_2);
+        pcm_in_2 = nullptr;
     }
     if (buffer) {
-        delete buffer;
-        buffer = 0;
+        free(buffer);
+        buffer = nullptr;
     }
     if (buffer2) {
-        delete buffer2;
-        buffer2 = 0;
+        free(buffer2);
+        buffer2 = nullptr;
     }
     if (buffer3) {
-        delete buffer3;
-        buffer3 = 0;
+        free(buffer3);
+        buffer3 = nullptr;
     }
     if (jniCallbackHelper) {
         delete jniCallbackHelper;
-        jniCallbackHelper = 0;
+        jniCallbackHelper = nullptr;
     }
     if (file) {
-        delete file;
-        file = 0;
+        fclose(file);
+        file = nullptr;
     }
 }
 
